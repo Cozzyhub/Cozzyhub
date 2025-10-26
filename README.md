@@ -1,11 +1,11 @@
 # CozzyHub - Premium E-Commerce Platform
 
-
 A full-featured, production-ready e-commerce platform built with Next.js 14, Supabase, and TypeScript. Your cozy corner for comfort and style, featuring a stunning glassmorphic UI with advanced animations and a complete admin dashboard.
 
 ## 🌟 Features
 
 ### Customer Features
+
 - 🏠 **Beautiful Homepage** - Premium glassmorphic design with smooth animations
 - 🛍️ **Product Catalog** - Browse all products with responsive grid layout
 - 🔍 **Product Details** - Detailed product pages with image galleries
@@ -16,6 +16,7 @@ A full-featured, production-ready e-commerce platform built with Next.js 14, Sup
 - 🎨 **Premium UI** - Glassmorphism effects, transparency, and Framer Motion animations
 
 ### Admin Features
+
 - 📊 **Dashboard** - Overview with statistics and recent orders
 - 📦 **Product Management** - Add, edit, delete products with image URLs
 - 🏷️ **Category Management** - Organize products by categories
@@ -102,6 +103,7 @@ premium-ecommerce-platform/
 ## 🗃️ Database Schema
 
 ### Tables
+
 - **profiles** - User profiles with admin flags
 - **products** - Product catalog with pricing and stock
 - **categories** - Product categories
@@ -114,19 +116,23 @@ All tables have Row Level Security (RLS) enabled.
 ## 🎨 Key Features
 
 ### Glassmorphic UI
+
 The entire UI features a premium glassmorphic design with:
+
 - Backdrop blur effects
 - Semi-transparent backgrounds
 - Smooth gradients and transitions
 - Framer Motion animations
 
 ### Admin Dashboard
+
 - Real-time statistics
 - Product CRUD operations
 - Order management
 - Status updates
 
 ### Shopping Experience
+
 - Add to cart functionality
 - Quantity adjustments
 - Persistent cart storage
@@ -163,3 +169,4 @@ MIT License - Free to use for personal or commercial projects.
 ---
 
 Built with ❤️ using Next.js 14 and Supabase
+PS: TT
