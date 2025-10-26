@@ -26,7 +26,8 @@ export async function POST() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!user)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   // Optional: verify admin
   const { data: profile } = await supabase
@@ -44,6 +45,7 @@ export async function POST() {
     .from("categories")
     .upsert(rows, { onConflict: "name" });
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+  if (error)
+    return NextResponse.json({ error: error.message }, { status: 400 });
   return NextResponse.json({ ok: true, count: rows.length });
 }

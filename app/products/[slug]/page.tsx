@@ -34,8 +34,8 @@ export default async function ProductDetail({
                   src={product.image_url}
                   alt={product.name}
                   className="w-full h-full object-cover"
-                />)
-              : (
+                />
+              ) : (
                 <div className="w-full h-full flex items-center justify-center text-white/40">
                   No image
                 </div>
@@ -44,7 +44,9 @@ export default async function ProductDetail({
           </div>
 
           <div>
-            <h1 className="text-3xl font-bold text-white mb-3">{product.name}</h1>
+            <h1 className="text-3xl font-bold text-white mb-3">
+              {product.name}
+            </h1>
             <p className="text-xl font-semibold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-6">
               {formatINR(Number(product.price))}
             </p>

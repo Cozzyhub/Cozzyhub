@@ -3,11 +3,14 @@
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Upload, X } from "lucide-react";
 import Link from "next/link";
 
 export default function NewProductPage() {
   const [loading, setLoading] = useState(false);
+  const [imageLoading, setImageLoading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string>("");
   const [formData, setFormData] = useState({
     name: "",
     slug: "",
@@ -20,6 +23,65 @@ export default function NewProductPage() {
   });
   const router = useRouter();
   const supabase = createClient();
+
+  const handleImageUpload = async (file: File) => {
+    setImageLoading(true);
+    try {
+      // Optimize image using our API
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("maxWidth", "1920");
+      formData.append("maxHeight", "1080");
+      formData.append("quality", "85");
+
+      const response = await fetch("/api/optimize-image", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) throw new Error("Failed to optimize image");
+
+      const optimizedBlob = await response.blob();
+
+      // Upload to Supabase Storage
+      const fileName = `${Date.now()}-${file.name.replace(/\.[^/.]+$/, "")}.webp`;
+      const { data, error } = await supabase.storage
+        .from("products")
+        .upload(fileName, optimizedBlob, {
+          contentType: "image/webp",
+          cacheControl: "3600",
+        });
+
+      if (error) throw error;
+
+      // Get public URL
+      const { data: urlData } = supabase.storage
+        .from("products")
+        .getPublicUrl(fileName);
+
+      setFormData((prev) => ({ ...prev, image_url: urlData.publicUrl }));
+      setImagePreview(URL.createObjectURL(optimizedBlob));
+    } catch (error) {
+      console.error("Image upload error:", error);
+      alert("Failed to upload image. Please try again.");
+    } finally {
+      setImageLoading(false);
+    }
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+      handleImageUpload(file);
+    }
+  };
+
+  const removeImage = () => {
+    setSelectedFile(null);
+    setImagePreview("");
+    setFormData((prev) => ({ ...prev, image_url: "" }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -152,17 +214,71 @@ export default function NewProductPage() {
 
           <div>
             <label className="block text-sm font-medium text-gray-200 mb-2">
-              Image URL
+              Product Image
             </label>
-            <input
-              type="url"
-              value={formData.image_url}
-              onChange={(e) =>
-                setFormData({ ...formData, image_url: e.target.value })
-              }
-              className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
-              placeholder="https://example.com/image.jpg"
-            />
+
+            {!imagePreview ? (
+              <div className="space-y-3">
+                <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-white/20 border-dashed rounded-lg cursor-pointer hover:bg-white/5 transition">
+                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                    <Upload className="w-10 h-10 mb-3 text-gray-400" />
+                    <p className="mb-2 text-sm text-gray-400">
+                      <span className="font-semibold">Click to upload</span> or
+                      drag and drop
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      PNG, JPG, GIF up to 10MB
+                    </p>
+                    <p className="text-xs text-purple-400 mt-1">
+                      Auto-optimized to WebP
+                    </p>
+                  </div>
+                  <input
+                    type="file"
+                    className="hidden"
+                    accept="image/*"
+                    onChange={handleFileSelect}
+                    disabled={imageLoading}
+                  />
+                </label>
+
+                <div className="text-center text-gray-400 text-sm">or</div>
+
+                <input
+                  type="url"
+                  value={formData.image_url}
+                  onChange={(e) =>
+                    setFormData({ ...formData, image_url: e.target.value })
+                  }
+                  className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="Or paste image URL"
+                />
+              </div>
+            ) : (
+              <div className="relative">
+                <img
+                  src={imagePreview}
+                  alt="Preview"
+                  className="w-full h-64 object-cover rounded-lg"
+                />
+                <button
+                  type="button"
+                  onClick={removeImage}
+                  className="absolute top-2 right-2 p-2 bg-red-500 hover:bg-red-600 rounded-full transition"
+                >
+                  <X size={20} className="text-white" />
+                </button>
+                <div className="mt-2 text-xs text-green-400 flex items-center gap-1">
+                  ✓ Image optimized and uploaded
+                </div>
+              </div>
+            )}
+
+            {imageLoading && (
+              <div className="mt-2 text-sm text-purple-400 animate-pulse">
+                Optimizing and uploading image...
+              </div>
+            )}
           </div>
 
           <div className="flex gap-6">

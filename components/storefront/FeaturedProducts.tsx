@@ -65,7 +65,10 @@ export default function FeaturedProducts({
                       {formatINR(product.price)}
                     </span>
                     <div onClick={(e) => e.preventDefault()}>
-                      <AddToCartButton productId={product.id} stock={product.stock} />
+                      <AddToCartButton
+                        productId={product.id}
+                        stock={product.stock}
+                      />
                     </div>
                   </div>
                 </div>

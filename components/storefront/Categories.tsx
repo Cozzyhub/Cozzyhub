@@ -15,14 +15,42 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 
 const categories = [
-  { name: "Women’s Ethnic Wear", icon: Sparkles, color: "from-pink-500 to-rose-500" },
-  { name: "Men’s Apparel", icon: Shirt, color: "from-violet-500 to-purple-500" },
-  { name: "Kids’ Clothing & Accessories", icon: Baby, color: "from-green-500 to-emerald-500" },
+  {
+    name: "Women’s Ethnic Wear",
+    icon: Sparkles,
+    color: "from-pink-500 to-rose-500",
+  },
+  {
+    name: "Men’s Apparel",
+    icon: Shirt,
+    color: "from-violet-500 to-purple-500",
+  },
+  {
+    name: "Kids’ Clothing & Accessories",
+    icon: Baby,
+    color: "from-green-500 to-emerald-500",
+  },
   { name: "Home & Kitchen", icon: Home, color: "from-blue-500 to-cyan-500" },
-  { name: "Beauty & Personal Care", icon: Sparkles, color: "from-amber-500 to-orange-500" },
-  { name: "Electronics & Mobile Accessories", icon: Smartphone, color: "from-purple-500 to-indigo-500" },
-  { name: "Fashion Accessories", icon: Gem, color: "from-fuchsia-500 to-pink-500" },
-  { name: "Daily-Use / General Merchandise", icon: Package, color: "from-slate-500 to-gray-500" },
+  {
+    name: "Beauty & Personal Care",
+    icon: Sparkles,
+    color: "from-amber-500 to-orange-500",
+  },
+  {
+    name: "Electronics & Mobile Accessories",
+    icon: Smartphone,
+    color: "from-purple-500 to-indigo-500",
+  },
+  {
+    name: "Fashion Accessories",
+    icon: Gem,
+    color: "from-fuchsia-500 to-pink-500",
+  },
+  {
+    name: "Daily-Use / General Merchandise",
+    icon: Package,
+    color: "from-slate-500 to-gray-500",
+  },
   { name: "Anime", icon: Star, color: "from-yellow-400 to-amber-500" },
 ];
 
@@ -70,10 +98,6 @@ export default function Categories() {
               );
             })}
           </div>
-
-          {/* Scroll Indicators */}
-          <div className="absolute top-1/2 -translate-y-1/2 left-0 w-8 h-full bg-gradient-to-r from-slate-950 to-transparent pointer-events-none" />
-          <div className="absolute top-1/2 -translate-y-1/2 right-0 w-8 h-full bg-gradient-to-l from-slate-950 to-transparent pointer-events-none" />
         </div>
       </div>
     </div>
