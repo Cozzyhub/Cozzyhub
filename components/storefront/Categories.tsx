@@ -6,40 +6,55 @@ import {
   Smartphone,
   Sparkles,
   Baby,
+  Watch,
   Package,
   Gem,
   Star,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { createClient } from "@/lib/supabase/client";
 
-const iconPool = [Sparkles, Shirt, Baby, Home, Smartphone, Gem, Package, Star];
-const colorPool = [
-  "from-pink-500 to-rose-500",
-  "from-violet-500 to-purple-500",
-  "from-green-500 to-emerald-500",
-  "from-blue-500 to-cyan-500",
-  "from-amber-500 to-orange-500",
-  "from-purple-500 to-indigo-500",
-  "from-fuchsia-500 to-pink-500",
-  "from-yellow-400 to-amber-500",
+const categories = [
+  {
+    name: "Women’s Ethnic Wear",
+    icon: Sparkles,
+    color: "from-pink-500 to-rose-500",
+  },
+  {
+    name: "Men’s Apparel",
+    icon: Shirt,
+    color: "from-violet-500 to-purple-500",
+  },
+  {
+    name: "Kids’ Clothing & Accessories",
+    icon: Baby,
+    color: "from-green-500 to-emerald-500",
+  },
+  { name: "Home & Kitchen", icon: Home, color: "from-blue-500 to-cyan-500" },
+  {
+    name: "Beauty & Personal Care",
+    icon: Sparkles,
+    color: "from-amber-500 to-orange-500",
+  },
+  {
+    name: "Electronics & Mobile Accessories",
+    icon: Smartphone,
+    color: "from-purple-500 to-indigo-500",
+  },
+  {
+    name: "Fashion Accessories",
+    icon: Gem,
+    color: "from-fuchsia-500 to-pink-500",
+  },
+  {
+    name: "Daily-Use / General Merchandise",
+    icon: Package,
+    color: "from-slate-500 to-gray-500",
+  },
+  { name: "Anime", icon: Star, color: "from-yellow-400 to-amber-500" },
 ];
 
 export default function Categories() {
-  const supabase = createClient();
-  const [categories, setCategories] = useState<Array<{ id: string; name: string; slug: string }>>([]);
-
-  useEffect(() => {
-    (async () => {
-      const { data } = await supabase
-        .from("categories")
-        .select("id, name, slug")
-        .order("name");
-      setCategories(data || []);
-    })();
-  }, [supabase]);
   return (
     <div className="py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -56,10 +71,9 @@ export default function Categories() {
           {/* Horizontal Scroll Container */}
           <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory">
             {categories.map((category, index) => {
-              const Icon = iconPool[index % iconPool.length];
-              const color = colorPool[index % colorPool.length];
+              const Icon = category.icon;
               return (
-                <Link href={`/products?category=${encodeURIComponent(category.slug)}`} key={category.id}>
+                <Link href="/products" key={category.name}>
                   <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     whileInView={{ opacity: 1, scale: 1 }}
@@ -71,7 +85,7 @@ export default function Categories() {
                   >
                     <div className="w-32 h-32 bg-white/10 backdrop-blur-md rounded-2xl p-4 flex flex-col items-center justify-center gap-3 cursor-pointer hover:bg-white/15 transition-all shadow-lg">
                       <div
-                        className={`w-14 h-14 rounded-full bg-gradient-to-br ${color} flex items-center justify-center shadow-lg`}
+                        className={`w-14 h-14 rounded-full bg-gradient-to-br ${category.color} flex items-center justify-center shadow-lg`}
                       >
                         <Icon size={28} className="text-white" />
                       </div>

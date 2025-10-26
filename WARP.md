@@ -7,39 +7,44 @@ This file provides guidance to WARP (warp.dev) when working with code in this re
 - Build: `npm run build`
 - Start (prod): `npm start`
 - Lint: `npm run lint` (Biome)
-- Format: `npm run format` (writes changes)
+- Format: `npm run format` (Biome, writes changes)
 - Tests: not configured in `package.json`
 
-## Environment and database
-- Create `.env.local` with:
-  - `NEXT_PUBLIC_SUPABASE_URL`
-  - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-  - (README lists `SUPABASE_SERVICE_ROLE_KEY`, but it is not referenced by code.)
-- Initialize DB by running `supabase/schema.sql` in Supabase SQL Editor.
-- To grant admin access: in Supabase Table Editor set `profiles.is_admin = true` for a user.
-- Seed categories (admin session required): POST `/api/seed-categories` while signed in as an admin.
+Database setup: run `supabase/schema.sql` in the Supabase SQL Editor before first run.
 
-## Architecture overview
-- Next.js App Router with React Server Components by default; add `"use client"` only for interactive views/forms.
-- Auth and route protection:
-  - Middleware logic lives in `proxy.ts` (protects `/admin/*`, redirects logged-in users away from `/login` and `/signup`). For it to take effect, export it from a root `middleware.ts` (e.g., `export { proxy as middleware, config } from './proxy'`).
-  - Admin role checked via `profiles.is_admin` in Supabase.
+Environment (.env.local):
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+(Note: a service role key is not used by the code at present.)
+
+Seed categories (admin session required): POST `/api/seed-categories` while signed in as an admin.
+
+## Architecture and structure
+- Next.js App Router with React Server Components by default; add `"use client"` only for interactive views and forms.
 - Supabase clients:
-  - Server: `lib/supabase/server.ts` exports `createClient()` wired to Next cookies for SSR, server actions, and route handlers.
+  - Server: `lib/supabase/server.ts` exports `createClient()` wired to Next cookies for SSR, route handlers, and server actions.
   - Client: `lib/supabase/client.ts` exports `createClient()` for browser-side usage in Client Components.
   - Import from the correct file based on component type to avoid auth/hydration issues.
-- API routes:
-  - `/api/seed-categories` upserts default categories (requires admin).
-  - `/api/optimize-image` image optimization with Sharp. POST accepts `file`, optional `maxWidth`, `maxHeight`, `quality`. GET accepts `url` with the same optional params; returns WebP with cache headers.
-- UI and pages (selected): home (`/`), products listing and detail (`/products`, `/products/[slug]`), cart/checkout (`/cart`, `/checkout`), profile (`/profile`), admin dashboard and management (`/admin`, `/admin/products`, `/admin/products/new`, `/admin/orders`).
-- Components: `components/admin/*` for admin UI; `components/storefront/*` for customer UI.
-- Client-side media utilities: `lib/ffmpeg/*` provides in-browser image conversion/optimization via FFmpeg WASM; `lib/utils/currency.ts` for formatting.
-- Styling and build:
-  - Tailwind CSS v4 via `postcss.config.mjs`; globals in `app/globals.css`.
-  - `next.config.ts`: enables React Compiler and Turbopack; allows remote images (`https://**`), sets image formats/sizes, and disables `fs` in webpack fallback.
+- Auth and route protection:
+  - `middleware.ts` guards `/admin/*` (redirects unauthenticated to `/login`) and redirects signed-in users away from `/login` and `/signup`.
+  - Admin role via `profiles.is_admin` in Supabase.
+- Data model (Supabase, see `supabase/schema.sql`): `profiles` (extends auth users, includes `is_admin`), `products` (optionally linked to `categories`), `cart` (user-scoped), `orders` and `order_items` (denormalize product data for history). RLS is expected across tables.
+- App routes (selected):
+  - `/` homepage fetches featured products on the server.
+  - `/products`, `/products/[slug]` listing and detail.
+  - `/cart`, `/checkout` cart and order creation (checkout is a Client Component; inserts `orders` and `order_items`, then clears `cart`).
+  - `/profile` user dashboard with order history.
+  - `/admin` dashboard, `/admin/products`, `/admin/products/new`, `/admin/orders` for management (server-rendered; creation form is client-side).
+  - `/api/seed-categories` route handler to upsert default categories (requires admin).
+- Components:
+  - `components/admin/*` admin UI (e.g., `AdminNav`, `DeleteProductButton`, `UpdateOrderStatus`).
+  - `components/storefront/*` customer UI (e.g., `Navbar`, `Hero`, `ProductCard`, `CartItems`, `ProductAddSection`).
+- Styling and assets:
+  - Tailwind CSS v4 via `postcss.config.mjs`; global styles in `app/globals.css`.
+  - `next.config.ts` allows remote images from any https host.
 - Tooling:
-  - TypeScript strict config; path alias `@/*` to repo root (see `tsconfig.json`).
-  - Biome (`biome.json`) for lint/format.
+  - TypeScript paths: `@/*` maps to repo root (see `tsconfig.json`).
+  - Biome (`biome.json`) provides lint and format.
 
-## Notes
-- Tests are not set up. If a test runner is added, document the commands here (including how to run a single test).
+## Notes for future changes
+- If tests are added (e.g., Vitest/Playwright), document how to run a single test and the test command here.

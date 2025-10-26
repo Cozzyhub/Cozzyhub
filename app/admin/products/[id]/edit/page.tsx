@@ -14,29 +14,17 @@ export default function EditProductPage() {
   const [imagePreview, setImagePreview] = useState<string>("");
   const [formData, setFormData] = useState({
     name: "",
+    slug: "",
     description: "",
     price: "",
     stock: "",
     image_url: "",
-    category_id: "",
     is_active: true,
     is_featured: false,
   });
-  const [categories, setCategories] = useState<Array<{ id: string; name: string; slug: string }>>([]);
   const router = useRouter();
   const params = useParams();
   const supabase = createClient();
-
-  // Load categories for selection
-  useEffect(() => {
-    (async () => {
-      const { data } = await supabase
-        .from("categories")
-        .select("id, name, slug")
-        .order("name");
-      setCategories(data || []);
-    })();
-  }, [supabase]);
   const productId = params?.id as string;
 
   useEffect(() => {
@@ -59,11 +47,11 @@ export default function EditProductPage() {
       if (data) {
         setFormData({
           name: data.name || "",
+          slug: data.slug || "",
           description: data.description || "",
           price: data.price?.toString() || "",
           stock: data.stock?.toString() || "",
           image_url: data.image_url || "",
-          category_id: data.category_id || "",
           is_active: data.is_active ?? true,
           is_featured: data.is_featured ?? false,
         });
@@ -144,14 +132,9 @@ export default function EditProductPage() {
     const { error } = await supabase
       .from("products")
       .update({
-        name: formData.name,
-        description: formData.description,
+        ...formData,
         price: parseFloat(formData.price),
         stock: parseInt(formData.stock),
-        image_url: formData.image_url,
-        category_id: formData.category_id || null,
-        is_active: formData.is_active,
-        is_featured: formData.is_featured,
       })
       .eq("id", productId);
 
@@ -162,6 +145,13 @@ export default function EditProductPage() {
       router.push("/admin/products");
       router.refresh();
     }
+  };
+
+  const generateSlug = (name: string) => {
+    return name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
   };
 
   if (fetchLoading) {
@@ -200,6 +190,7 @@ export default function EditProductPage() {
                   setFormData({
                     ...formData,
                     name: e.target.value,
+                    slug: generateSlug(e.target.value),
                   });
                 }}
                 className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -209,20 +200,18 @@ export default function EditProductPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-200 mb-2">
-                Category
+                Slug *
               </label>
-              <select
-                value={formData.category_id}
-                onChange={(e) => setFormData({ ...formData, category_id: e.target.value })}
-                className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
-              >
-                <option value="" className="bg-slate-900">Uncategorized</option>
-                {categories.map((c) => (
-                  <option key={c.id} value={c.id} className="bg-slate-900">
-                    {c.name}
-                  </option>
-                ))}
-              </select>
+              <input
+                type="text"
+                required
+                value={formData.slug}
+                onChange={(e) =>
+                  setFormData({ ...formData, slug: e.target.value })
+                }
+                className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                placeholder="premium-wireless-headphones"
+              />
             </div>
           </div>
 
