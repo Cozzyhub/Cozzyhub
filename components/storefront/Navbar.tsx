@@ -36,11 +36,7 @@ export default function Navbar() {
   };
 
   return (
-    <motion.nav
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      className="backdrop-blur-xl bg-white/5 border-b border-white/10 sticky top-0 z-50"
-    >
+    <nav className="backdrop-blur-xl bg-gradient-to-r from-slate-950/98 via-indigo-950/98 to-purple-950/98 border-b border-indigo-500/20 sticky top-0 z-50 transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/">
@@ -74,13 +70,15 @@ export default function Navbar() {
           </div>
 
           <div className="flex items-center gap-4">
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              className="text-gray-300 hover:text-white transition"
-            >
-              <Search size={20} />
-            </motion.button>
+            <Link href="/search">
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                className="text-gray-300 hover:text-white transition"
+              >
+                <Search size={20} />
+              </motion.button>
+            </Link>
 
             <Link href="/cart">
               <motion.button
@@ -126,6 +124,6 @@ export default function Navbar() {
           </div>
         </div>
       </div>
-    </motion.nav>
+    </nav>
   );
 }

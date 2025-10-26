@@ -2,14 +2,46 @@ import { createClient } from "@/lib/supabase/server";
 import Navbar from "@/components/storefront/Navbar";
 import ProductCard from "@/components/storefront/ProductCard";
 
-export default async function ProductsPage() {
-  const supabase = await createClient();
+interface ProductsPageProps {
+  searchParams: { category?: string; subcategory?: string };
+}
 
-  const { data: products } = await supabase
+export default async function ProductsPage({
+  searchParams,
+}: ProductsPageProps) {
+  const supabase = await createClient();
+  const { category, subcategory } = await searchParams;
+
+  let query = supabase
     .from("products")
     .select("*")
-    .eq("is_active", true)
-    .order("created_at", { ascending: false });
+    .eq("is_active", true);
+
+  // Filter by category if provided
+  if (category) {
+    query = query.eq("category", category);
+  }
+
+  // Filter by subcategory if provided
+  if (subcategory) {
+    query = query.eq("subcategory", subcategory);
+  }
+
+  const { data: products } = await query.order("created_at", {
+    ascending: false,
+  });
+
+  // Generate page title based on filters
+  let pageTitle = "All Products";
+  let pageDescription = "Discover our complete collection";
+
+  if (subcategory) {
+    pageTitle = subcategory;
+    pageDescription = `Browse our ${subcategory.toLowerCase()} collection`;
+  } else if (category) {
+    pageTitle = category;
+    pageDescription = `Explore ${category.toLowerCase()} products`;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
@@ -17,10 +49,48 @@ export default async function ProductsPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="mb-12">
-          <h1 className="text-4xl font-bold text-white mb-4">All Products</h1>
-          <p className="text-gray-400 text-lg">
-            Discover our complete collection
-          </p>
+          {/* Breadcrumbs */}
+          {(category || subcategory) && (
+            <div className="flex items-center gap-2 text-sm text-gray-400 mb-4">
+              <a href="/" className="hover:text-white transition-colors">
+                Home
+              </a>
+              <span>/</span>
+              {category && (
+                <>
+                  {subcategory ? (
+                    <a
+                      href={`/products?category=${encodeURIComponent(category)}`}
+                      className="hover:text-white transition-colors"
+                    >
+                      {category}
+                    </a>
+                  ) : (
+                    <span className="text-white">{category}</span>
+                  )}
+                </>
+              )}
+              {subcategory && (
+                <>
+                  <span>/</span>
+                  <span className="text-white">{subcategory}</span>
+                </>
+              )}
+            </div>
+          )}
+
+          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent mb-4">
+            {pageTitle}
+          </h1>
+          <p className="text-gray-400 text-lg">{pageDescription}</p>
+
+          {/* Results count */}
+          {products && products.length > 0 && (
+            <p className="text-gray-500 text-sm mt-2">
+              {products.length} {products.length === 1 ? "product" : "products"}{" "}
+              found
+            </p>
+          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -31,7 +101,17 @@ export default async function ProductsPage() {
 
         {(!products || products.length === 0) && (
           <div className="text-center py-12">
-            <p className="text-gray-400 text-lg">No products available yet.</p>
+            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-12 inline-block">
+              <p className="text-gray-400 text-lg mb-2">
+                No products available in this category yet.
+              </p>
+              <a
+                href="/products"
+                className="text-purple-400 hover:text-purple-300 underline"
+              >
+                View all products
+              </a>
+            </div>
           </div>
         )}
       </div>

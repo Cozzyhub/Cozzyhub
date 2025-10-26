@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Upload, X } from "lucide-react";
 import Link from "next/link";
+import { getCategoryNames, getSubcategoriesForCategory } from "@/lib/categories";
 
 export default function NewProductPage() {
   const [loading, setLoading] = useState(false);
@@ -17,12 +18,20 @@ export default function NewProductPage() {
     description: "",
     price: "",
     stock: "",
+    category: "",
+    subcategory: "",
     image_url: "",
     is_active: true,
     is_featured: false,
   });
   const router = useRouter();
   const supabase = createClient();
+  
+  const categoryNames = useMemo(() => getCategoryNames(), []);
+  const subcategories = useMemo(
+    () => (formData.category ? getSubcategoriesForCategory(formData.category) : []),
+    [formData.category]
+  );
 
   const handleImageUpload = async (file: File) => {
     setImageLoading(true);
@@ -175,6 +184,55 @@ export default function NewProductPage() {
               className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
               placeholder="Product description..."
             />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-200 mb-2">
+                Category *
+              </label>
+              <select
+                required
+                value={formData.category}
+                onChange={(e) =>
+                  setFormData({ ...formData, category: e.target.value, subcategory: "" })
+                }
+                className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+              >
+                <option value="">Select Category</option>
+                {categoryNames.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-200 mb-2">
+                Subcategory
+              </label>
+              <select
+                value={formData.subcategory}
+                onChange={(e) =>
+                  setFormData({ ...formData, subcategory: e.target.value })
+                }
+                disabled={!formData.category}
+                className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <option value="">Select Subcategory (Optional)</option>
+                {subcategories.map((sub) => (
+                  <option key={sub} value={sub}>
+                    {sub}
+                  </option>
+                ))}
+              </select>
+              {!formData.category && (
+                <p className="text-gray-500 text-xs mt-1">
+                  Select a category first
+                </p>
+              )}
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
