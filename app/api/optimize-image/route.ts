@@ -28,8 +28,10 @@ export async function POST(request: NextRequest) {
       .webp({ quality })
       .toBuffer();
 
-    // Return optimized image
-    return new NextResponse(optimizedImage, {
+    // Return optimized image (ensure ArrayBuffer body for NextResponse)
+    const ab = new ArrayBuffer(optimizedImage.byteLength);
+    new Uint8Array(ab).set(optimizedImage);
+    return new NextResponse(ab, {
       status: 200,
       headers: {
         "Content-Type": "image/webp",
@@ -85,7 +87,9 @@ export async function GET(request: NextRequest) {
       .webp({ quality })
       .toBuffer();
 
-    return new NextResponse(optimizedImage, {
+    const ab = new ArrayBuffer(optimizedImage.byteLength);
+    new Uint8Array(ab).set(optimizedImage);
+    return new NextResponse(ab, {
       status: 200,
       headers: {
         "Content-Type": "image/webp",

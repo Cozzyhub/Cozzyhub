@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Upload, X } from "lucide-react";
@@ -13,16 +13,28 @@ export default function NewProductPage() {
   const [imagePreview, setImagePreview] = useState<string>("");
   const [formData, setFormData] = useState({
     name: "",
-    slug: "",
     description: "",
     price: "",
     stock: "",
     image_url: "",
+    category_id: "",
     is_active: true,
     is_featured: false,
   });
+  const [categories, setCategories] = useState<Array<{ id: string; name: string; slug: string }>>([]);
   const router = useRouter();
   const supabase = createClient();
+
+  // Load categories for selection
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase
+        .from("categories")
+        .select("id, name, slug")
+        .order("name");
+      setCategories(data || []);
+    })();
+  }, [supabase]);
 
   const handleImageUpload = async (file: File) => {
     setImageLoading(true);
@@ -89,9 +101,15 @@ export default function NewProductPage() {
 
     const { error } = await supabase.from("products").insert([
       {
-        ...formData,
+        name: formData.name,
+        slug: generateSlug(formData.name),
+        description: formData.description,
         price: parseFloat(formData.price),
         stock: parseInt(formData.stock),
+        image_url: formData.image_url,
+        category_id: formData.category_id || null,
+        is_active: formData.is_active,
+        is_featured: formData.is_featured,
       },
     ]);
 
@@ -137,7 +155,6 @@ export default function NewProductPage() {
                   setFormData({
                     ...formData,
                     name: e.target.value,
-                    slug: generateSlug(e.target.value),
                   });
                 }}
                 className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -147,18 +164,20 @@ export default function NewProductPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-200 mb-2">
-                Slug *
+                Category
               </label>
-              <input
-                type="text"
-                required
-                value={formData.slug}
-                onChange={(e) =>
-                  setFormData({ ...formData, slug: e.target.value })
-                }
-                className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                placeholder="premium-wireless-headphones"
-              />
+              <select
+                value={formData.category_id}
+                onChange={(e) => setFormData({ ...formData, category_id: e.target.value })}
+                className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+              >
+                <option value="" className="bg-slate-900">Uncategorized</option>
+                {categories.map((c) => (
+                  <option key={c.id} value={c.id} className="bg-slate-900">
+                    {c.name}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
 

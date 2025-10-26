@@ -47,7 +47,10 @@ export async function convertImageToWebP(
   await ffmpeg.deleteFile("input");
   await ffmpeg.deleteFile("output.webp");
 
-  return new Blob([data], { type: "image/webp" });
+  // Ensure BlobPart is backed by ArrayBuffer (not SharedArrayBuffer)
+  const ab1 = new ArrayBuffer((data as Uint8Array).byteLength);
+  new Uint8Array(ab1).set(data as Uint8Array);
+  return new Blob([ab1], { type: "image/webp" });
 }
 
 export async function optimizeImage(
@@ -78,5 +81,7 @@ export async function optimizeImage(
   await ffmpeg.deleteFile("input");
   await ffmpeg.deleteFile("output.webp");
 
-  return new Blob([data], { type: "image/webp" });
+  const ab2 = new ArrayBuffer((data as Uint8Array).byteLength);
+  new Uint8Array(ab2).set(data as Uint8Array);
+  return new Blob([ab2], { type: "image/webp" });
 }
