@@ -18,46 +18,53 @@ interface Product {
 export default function ProductCard({ product }: { product: Product }) {
   return (
     <motion.div
-      whileHover={{ y: -4 }}
-      className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl overflow-hidden group"
+      whileHover={{ y: -8, scale: 1.02 }}
+      transition={{ duration: 0.3 }}
+      className="group relative overflow-hidden bg-white rounded-2xl border border-gray-200 shadow-md hover:shadow-xl transition-all duration-300"
     >
       <Link href={`/products/${product.slug}`}>
-        {product.image_url ? (
-          <div className="relative h-48 overflow-hidden">
+        <div className="relative aspect-square overflow-hidden rounded-t-3xl">
+          {product.image_url ? (
             <img
               src={product.image_url}
               alt={product.name}
-              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+              loading="lazy"
             />
-          </div>
-        ) : (
-          <div className="h-48 bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center">
-            <ShoppingCart size={32} className="text-white/30" />
-          </div>
-        )}
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center">
+              <ShoppingCart
+                size={48}
+                className="text-gray-400"
+              />
+            </div>
+          )}
+          {/* Image overlay */}
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 via-black/0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        </div>
       </Link>
 
-      <div className="p-4">
+      <div className="p-6 space-y-3">
         <Link href={`/products/${product.slug}`}>
-          <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-purple-400 transition line-clamp-2">
+          <h3 className="font-serif text-xl md:text-2xl text-gray-900 tracking-tight group-hover:text-pink-600 transition-colors duration-300 line-clamp-2">
             {product.name}
           </h3>
         </Link>
 
-        <div className="flex items-center justify-between">
-          <span className="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+        <div className="flex items-center justify-between pt-2">
+          <span className="font-serif text-2xl md:text-3xl text-pink-600 tracking-tight font-bold transition-colors duration-300">
             {formatINR(product.price)}
           </span>
           <AddToCartButton productId={product.id} stock={product.stock} />
         </div>
 
         {product.stock < 10 && product.stock > 0 && (
-          <p className="text-xs text-yellow-400 mt-2">
+          <p className="text-xs text-amber-700 font-medium mt-2 transition-colors duration-300">
             Only {product.stock} left!
           </p>
         )}
         {product.stock === 0 && (
-          <p className="text-xs text-red-400 mt-2">Out of stock</p>
+          <p className="text-xs text-red-600 font-medium mt-2 transition-colors duration-300">Out of stock</p>
         )}
       </div>
     </motion.div>

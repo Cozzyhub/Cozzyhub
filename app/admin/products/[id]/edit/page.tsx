@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useRouter, useParams } from "next/navigation";
 import { ArrowLeft, Upload, X } from "lucide-react";
 import Link from "next/link";
+import { getCategoryNames } from "@/lib/categories";
 
 export default function EditProductPage() {
   const [loading, setLoading] = useState(false);
@@ -15,6 +16,7 @@ export default function EditProductPage() {
   const [formData, setFormData] = useState({
     name: "",
     slug: "",
+    category: "",
     description: "",
     price: "",
     stock: "",
@@ -48,6 +50,7 @@ export default function EditProductPage() {
         setFormData({
           name: data.name || "",
           slug: data.slug || "",
+          category: data.category || "",
           description: data.description || "",
           price: data.price?.toString() || "",
           stock: data.stock?.toString() || "",
@@ -200,18 +203,30 @@ export default function EditProductPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-200 mb-2">
-                Slug *
+                Category *
               </label>
-              <input
-                type="text"
+              <select
                 required
-                value={formData.slug}
+                value={formData.category}
                 onChange={(e) =>
-                  setFormData({ ...formData, slug: e.target.value })
+                  setFormData({ ...formData, category: e.target.value })
                 }
-                className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                placeholder="premium-wireless-headphones"
-              />
+                className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                style={{ colorScheme: "dark" }}
+              >
+                <option value="" className="bg-slate-800 text-gray-300">
+                  Select a category
+                </option>
+                {getCategoryNames().map((cat) => (
+                  <option
+                    key={cat}
+                    value={cat}
+                    className="bg-slate-800 text-white"
+                  >
+                    {cat}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
 

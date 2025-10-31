@@ -149,7 +149,9 @@ export default function SearchAutocomplete() {
                       <p className="text-white text-sm font-medium truncate">
                         {product.name}
                       </p>
-                      <p className="text-gray-400 text-xs">{product.category}</p>
+                      <p className="text-gray-400 text-xs">
+                        {product.category}
+                      </p>
                     </div>
                     <p className="text-purple-400 font-semibold text-sm">
                       ₹{product.price}

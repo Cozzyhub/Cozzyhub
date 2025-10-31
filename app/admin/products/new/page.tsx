@@ -5,7 +5,10 @@ import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Upload, X } from "lucide-react";
 import Link from "next/link";
-import { getCategoryNames, getSubcategoriesForCategory } from "@/lib/categories";
+import {
+  getCategoryNames,
+  getSubcategoriesForCategory,
+} from "@/lib/categories";
 
 export default function NewProductPage() {
   const [loading, setLoading] = useState(false);
@@ -26,11 +29,12 @@ export default function NewProductPage() {
   });
   const router = useRouter();
   const supabase = createClient();
-  
+
   const categoryNames = useMemo(() => getCategoryNames(), []);
   const subcategories = useMemo(
-    () => (formData.category ? getSubcategoriesForCategory(formData.category) : []),
-    [formData.category]
+    () =>
+      formData.category ? getSubcategoriesForCategory(formData.category) : [],
+    [formData.category],
   );
 
   const handleImageUpload = async (file: File) => {
@@ -195,13 +199,24 @@ export default function NewProductPage() {
                 required
                 value={formData.category}
                 onChange={(e) =>
-                  setFormData({ ...formData, category: e.target.value, subcategory: "" })
+                  setFormData({
+                    ...formData,
+                    category: e.target.value,
+                    subcategory: "",
+                  })
                 }
                 className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                style={{ colorScheme: "dark" }}
               >
-                <option value="">Select Category</option>
+                <option value="" className="bg-slate-800 text-gray-300">
+                  Select Category
+                </option>
                 {categoryNames.map((cat) => (
-                  <option key={cat} value={cat}>
+                  <option
+                    key={cat}
+                    value={cat}
+                    className="bg-slate-800 text-white"
+                  >
                     {cat}
                   </option>
                 ))}
@@ -219,10 +234,17 @@ export default function NewProductPage() {
                 }
                 disabled={!formData.category}
                 className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{ colorScheme: "dark" }}
               >
-                <option value="">Select Subcategory (Optional)</option>
+                <option value="" className="bg-slate-800 text-gray-300">
+                  Select Subcategory (Optional)
+                </option>
                 {subcategories.map((sub) => (
-                  <option key={sub} value={sub}>
+                  <option
+                    key={sub}
+                    value={sub}
+                    className="bg-slate-800 text-white"
+                  >
                     {sub}
                   </option>
                 ))}

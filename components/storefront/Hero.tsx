@@ -6,43 +6,45 @@ import { ArrowRight, Truck, Shield, IndianRupee } from "lucide-react";
 
 export default function Hero() {
   return (
-    <div className="relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
-        <div className="text-center">
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6">
-            Welcome to
-            <br />
-            <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-gradient">
+    <section className="relative overflow-hidden bg-white py-16 md:py-24 px-6">
+      <div className="section-container">
+        <div className="text-center relative z-10">
+          {/* Hero Headline */}
+          <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-tight tracking-wide text-gray-900 mb-6">
+            Welcome to{" "}
+            <span className="block mt-2 bg-gradient-to-r from-pink-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
               CosyHub
             </span>
           </h1>
 
-          <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl mx-auto px-4">
-            Your cozy corner for comfort and style. Discover handpicked products
-            that make your space feel like home.
+          {/* Subtitle */}
+          <p className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed mb-10">
+            Your cozy corner for comfort and style. Discover curated collections
+            built on trust, warmth, and luxury.
           </p>
 
+          {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link href="/products" className="w-full sm:w-auto">
               <motion.button
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.02, y: -2 }}
+                whileTap={{ scale: 0.98 }}
                 type="button"
-                className="group w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white font-semibold rounded-xl hover:shadow-xl hover:shadow-purple-500/50 hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2"
+                className="group w-full sm:w-auto px-8 py-4 btn-primary rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 border border-white/40"
               >
                 Shop Now
                 <ArrowRight
-                  className="group-hover:translate-x-1 transition"
+                  className="group-hover:translate-x-1 transition-transform"
                   size={20}
                 />
               </motion.button>
             </Link>
             <Link href="/products" className="w-full sm:w-auto">
               <motion.button
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.02, y: -2 }}
+                whileTap={{ scale: 0.98 }}
                 type="button"
-                className="w-full sm:w-auto px-8 py-4 backdrop-blur-xl bg-white/10 border border-white/20 text-white font-semibold rounded-xl hover:bg-white/20 hover:border-white/30 transition-all"
+                className="w-full sm:w-auto px-8 py-4 btn-ghost rounded-2xl"
               >
                 Explore Collection
               </motion.button>
@@ -50,23 +52,25 @@ export default function Hero() {
           </div>
 
           {/* Feature Badges */}
-          <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto">
+          <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.2 }}
               whileHover={{ scale: 1.05, y: -5 }}
-              className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-md border border-indigo-500/30 rounded-xl p-4 flex items-center gap-3 shadow-lg hover:shadow-xl hover:border-indigo-500/50 transition-all"
+              className="glass-card rounded-2xl p-6 flex items-center gap-4 shadow-lg hover:shadow-xl transition-all duration-300 bg-white/90"
             >
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center flex-shrink-0">
+              <div className="w-14 h-14 rounded-full bg-gradient-to-br from-emerald-400 to-green-500 flex items-center justify-center flex-shrink-0 shadow-md">
                 <Truck size={24} className="text-white" />
               </div>
               <div className="text-left">
-                <p className="text-white font-semibold text-sm">
+                <p className="text-gray-900 font-semibold text-base">
                   Free Delivery
                 </p>
-                <p className="text-gray-400 text-xs">On all orders</p>
+                <p className="text-gray-600 text-sm">
+                  On all orders
+                </p>
               </div>
             </motion.div>
 
@@ -76,16 +80,18 @@ export default function Hero() {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.3 }}
               whileHover={{ scale: 1.05, y: -5 }}
-              className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-md border border-purple-500/30 rounded-xl p-4 flex items-center gap-3 shadow-lg hover:shadow-xl hover:border-purple-500/50 transition-all"
+              className="glass-card rounded-2xl p-6 flex items-center gap-4 shadow-lg hover:shadow-xl transition-all duration-300 bg-white/90"
             >
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center flex-shrink-0">
+              <div className="w-14 h-14 rounded-full bg-gradient-to-br from-amber-400 to-yellow-500 flex items-center justify-center flex-shrink-0 shadow-md">
                 <IndianRupee size={24} className="text-white" />
               </div>
               <div className="text-left">
-                <p className="text-white font-semibold text-sm">
+                <p className="text-gray-900 font-semibold text-base">
                   Cash on Delivery
                 </p>
-                <p className="text-gray-400 text-xs">Pay at doorstep</p>
+                <p className="text-gray-600 text-sm">
+                  Pay at doorstep
+                </p>
               </div>
             </motion.div>
 
@@ -95,27 +101,26 @@ export default function Hero() {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.4 }}
               whileHover={{ scale: 1.05, y: -5 }}
-              className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-md border border-pink-500/30 rounded-xl p-4 flex items-center gap-3 shadow-lg hover:shadow-xl hover:border-pink-500/50 transition-all"
+              className="glass-card rounded-2xl p-6 flex items-center gap-4 shadow-lg hover:shadow-xl transition-all duration-300 bg-white/90"
             >
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center flex-shrink-0">
+              <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-400 to-cyan-500 flex items-center justify-center flex-shrink-0 shadow-md">
                 <Shield size={24} className="text-white" />
               </div>
               <div className="text-left">
-                <p className="text-white font-semibold text-sm">
+                <p className="text-gray-900 font-semibold text-base">
                   Secure Shopping
                 </p>
-                <p className="text-gray-400 text-xs">100% protected</p>
+                <p className="text-gray-600 text-sm">
+                  100% protected
+                </p>
               </div>
             </motion.div>
           </div>
         </div>
       </div>
-      
-      {/* Subtle animated background */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 -left-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/4 -right-1/4 w-96 h-96 bg-pink-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "2s" }} />
-      </div>
-    </div>
+
+      {/* Subtle ambient glow */}
+      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-pink-50/30 via-purple-50/30 to-blue-50/30" />
+    </section>
   );
 }

@@ -33,6 +33,7 @@ export default function DeleteProductButton({
 
   return (
     <button
+      type="button"
       onClick={handleDelete}
       disabled={loading}
       className="p-2 text-red-400 hover:bg-red-500/10 rounded-lg transition disabled:opacity-50"

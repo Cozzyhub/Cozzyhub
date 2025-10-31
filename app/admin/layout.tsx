@@ -28,7 +28,10 @@ export default async function AdminLayout({
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
+    <div
+      className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950"
+      suppressHydrationWarning
+    >
       <AdminNav />
       <div className="lg:pl-64">
         <main className="p-8">{children}</main>

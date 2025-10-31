@@ -26,10 +26,8 @@ export async function convertImageToWebP(
 ): Promise<Blob> {
   const ffmpeg = await loadFFmpeg();
 
-  // Write input file to FFmpeg's virtual file system
   await ffmpeg.writeFile("input", await fetchFile(file));
 
-  // Convert to WebP with quality setting
   await ffmpeg.exec([
     "-i",
     "input",
@@ -40,14 +38,16 @@ export async function convertImageToWebP(
     "output.webp",
   ]);
 
-  // Read the output file
-  const data = await ffmpeg.readFile("output.webp");
+  const data = (await ffmpeg.readFile("output.webp")) as unknown as Uint8Array;
 
-  // Clean up
   await ffmpeg.deleteFile("input");
   await ffmpeg.deleteFile("output.webp");
 
-  return new Blob([data], { type: "image/webp" });
+  const ab = (data.buffer as ArrayBuffer).slice(
+    data.byteOffset,
+    data.byteOffset + data.byteLength,
+  );
+  return new Blob([ab], { type: "image/webp" });
 }
 
 export async function optimizeImage(
@@ -60,7 +60,6 @@ export async function optimizeImage(
 
   await ffmpeg.writeFile("input", await fetchFile(file));
 
-  // Optimize and resize image
   await ffmpeg.exec([
     "-i",
     "input",
@@ -73,10 +72,14 @@ export async function optimizeImage(
     "output.webp",
   ]);
 
-  const data = await ffmpeg.readFile("output.webp");
+  const data = (await ffmpeg.readFile("output.webp")) as unknown as Uint8Array;
 
   await ffmpeg.deleteFile("input");
   await ffmpeg.deleteFile("output.webp");
 
-  return new Blob([data], { type: "image/webp" });
+  const ab = (data.buffer as ArrayBuffer).slice(
+    data.byteOffset,
+    data.byteOffset + data.byteLength,
+  );
+  return new Blob([ab], { type: "image/webp" });
 }

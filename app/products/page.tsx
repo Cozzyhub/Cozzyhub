@@ -12,10 +12,7 @@ export default async function ProductsPage({
   const supabase = await createClient();
   const { category, subcategory } = await searchParams;
 
-  let query = supabase
-    .from("products")
-    .select("*")
-    .eq("is_active", true);
+  let query = supabase.from("products").select("*").eq("is_active", true);
 
   // Filter by category if provided
   if (category) {
@@ -44,45 +41,51 @@ export default async function ProductsPage({
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
+    <div className="min-h-screen bg-gray-50 transition-colors duration-200">
       <Navbar />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="mb-12">
           {/* Breadcrumbs */}
           {(category || subcategory) && (
-            <div className="flex items-center gap-2 text-sm text-gray-400 mb-4">
-              <a href="/" className="hover:text-white transition-colors">
+            <div className="flex items-center gap-2 text-sm text-gray-600 mb-4">
+              <a
+                href="/"
+                className="hover:text-pink-600 transition-colors"
+              >
                 Home
               </a>
               <span>/</span>
-              {category && (
-                <>
-                  {subcategory ? (
-                    <a
-                      href={`/products?category=${encodeURIComponent(category)}`}
-                      className="hover:text-white transition-colors"
+              {category &&
+                (subcategory ? (
+                  <a
+                    href={`/products?category=${encodeURIComponent(category)}`}
+                      className="hover:text-pink-600 transition-colors"
                     >
+                    {category}
+                  </a>
+                ) : (
+                    <span className="text-gray-900 font-medium">
                       {category}
-                    </a>
-                  ) : (
-                    <span className="text-white">{category}</span>
-                  )}
-                </>
-              )}
+                    </span>
+                ))}
               {subcategory && (
                 <>
                   <span>/</span>
-                  <span className="text-white">{subcategory}</span>
+                  <span className="text-gray-900 font-medium">
+                    {subcategory}
+                  </span>
                 </>
               )}
             </div>
           )}
 
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent mb-4">
+          <h1 className="font-serif text-4xl md:text-5xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-pink-500 bg-clip-text text-transparent mb-4">
             {pageTitle}
           </h1>
-          <p className="text-gray-400 text-lg">{pageDescription}</p>
+          <p className="text-gray-600 text-lg">
+            {pageDescription}
+          </p>
 
           {/* Results count */}
           {products && products.length > 0 && (
@@ -101,13 +104,13 @@ export default async function ProductsPage({
 
         {(!products || products.length === 0) && (
           <div className="text-center py-12">
-            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-12 inline-block">
-              <p className="text-gray-400 text-lg mb-2">
+            <div className="glass-card rounded-2xl p-12 inline-block">
+              <p className="text-gray-600 text-lg mb-2">
                 No products available in this category yet.
               </p>
               <a
                 href="/products"
-                className="text-purple-400 hover:text-purple-300 underline"
+                className="text-pink-600 hover:text-pink-700 underline transition-colors"
               >
                 View all products
               </a>

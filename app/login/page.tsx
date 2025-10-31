@@ -34,19 +34,23 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-gray-50 to-gray-100 p-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className="w-full max-w-md"
       >
-        <div className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl shadow-2xl p-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Welcome Back</h1>
-          <p className="text-gray-300 mb-8">Sign in to your account</p>
+        <div className="glass-card rounded-2xl shadow-2xl p-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Welcome Back
+          </h1>
+          <p className="text-gray-600 mb-8">
+            Sign in to your account
+          </p>
 
           {error && (
-            <div className="mb-4 p-3 rounded-lg bg-red-500/20 border border-red-500/50 text-red-200">
+            <div className="mb-4 p-3 rounded-lg bg-red-50 border border-red-200 text-red-800">
               {error}
             </div>
           )}
@@ -55,7 +59,7 @@ export default function LoginPage() {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-gray-200 mb-2"
+                className="block text-sm font-medium text-gray-900 mb-2"
               >
                 Email
               </label>
@@ -65,7 +69,7 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+                className="w-full px-4 py-3 rounded-lg bg-white/50 border border-gray-200/40 text-gray-900 placeholder-warm-gray focus:outline-none focus:ring-2 focus:ring-muted-rose focus:border-transparent transition"
                 placeholder="you@example.com"
               />
             </div>
@@ -73,7 +77,7 @@ export default function LoginPage() {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-gray-200 mb-2"
+                className="block text-sm font-medium text-gray-900 mb-2"
               >
                 Password
               </label>
@@ -83,7 +87,7 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+                className="w-full px-4 py-3 rounded-lg bg-white/50 border border-gray-200/40 text-gray-900 placeholder-warm-gray focus:outline-none focus:ring-2 focus:ring-muted-rose focus:border-transparent transition"
                 placeholder="••••••••"
               />
             </div>
@@ -91,17 +95,17 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 px-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-lg hover:from-purple-600 hover:to-pink-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-slate-900 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-3 px-4 btn-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-muted-rose focus:ring-offset-2 transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? "Signing in..." : "Sign In"}
             </button>
           </form>
 
-          <p className="mt-6 text-center text-gray-300">
+          <p className="mt-6 text-center text-gray-600">
             Don't have an account?{" "}
             <Link
               href="/signup"
-              className="text-purple-400 hover:text-purple-300 font-semibold"
+              className="text-pink-600 hover:text-warm-amber font-semibold"
             >
               Sign up
             </Link>

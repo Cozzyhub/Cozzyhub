@@ -2,6 +2,13 @@ import { createClient } from "@/lib/supabase/server";
 import UpdateOrderStatus from "@/components/admin/UpdateOrderStatus";
 import { formatINR } from "@/lib/utils/currency";
 
+interface OrderItem {
+  id: string;
+  product_name: string;
+  quantity: number;
+  product_price: string | number;
+}
+
 export default async function AdminOrders() {
   const supabase = await createClient();
 
@@ -55,7 +62,7 @@ export default async function AdminOrders() {
             <div>
               <p className="text-gray-400 text-sm mb-2">Items</p>
               <div className="space-y-2">
-                {order.order_items?.map((item: any) => (
+                {order.order_items?.map((item: OrderItem) => (
                   <div
                     key={item.id}
                     className="flex items-center justify-between bg-white/5 rounded-lg p-3"

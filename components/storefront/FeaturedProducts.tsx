@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 import { ShoppingCart } from "lucide-react";
 import { formatINR } from "@/lib/utils/currency";
 import AddToCartButton from "@/components/storefront/AddToCartButton";
@@ -24,59 +25,52 @@ export default function FeaturedProducts({
   const isLoading = !products;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.5 }}
-        className="text-center mb-12"
-      >
-        <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-indigo-200 via-purple-200 to-pink-200 bg-clip-text text-transparent mb-4">
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 bg-white transition-colors duration-300">
+      <div className="text-center mb-16">
+        <h2 className="font-serif text-4xl md:text-5xl text-gray-900 mb-4 tracking-tight transition-colors duration-300">
           Featured Products
         </h2>
-        <p className="text-gray-400 text-lg">
+        <p className="text-gray-600 text-lg transition-colors duration-300">
           Handpicked selections just for you
         </p>
-      </motion.div>
+      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         {isLoading
           ? Array.from({ length: 8 }).map((_, i) => (
               <ProductCardSkeleton key={i} />
             ))
           : products.map((product, index) => (
-              <motion.div
+              <div
                 key={product.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.4, delay: index * 0.05 }}
-                className="group"
+                className="group hover:-translate-y-2 hover:scale-[1.02] transition-transform duration-300"
               >
                 <Link href={`/products/${product.slug}`}>
-                  <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:bg-white/10 hover:border-white/20 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-purple-500/20">
+                  <div className="bg-white border border-gray-200 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500">
                     {product.image_url ? (
-                      <div className="relative aspect-square overflow-hidden">
-                        <img
+                      <div className="relative aspect-square overflow-hidden rounded-t-3xl">
+                        <Image
                           src={product.image_url}
                           alt={product.name}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                          loading="lazy"
+                          width={400}
+                          height={400}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                          loading={index < 4 ? "eager" : "lazy"}
+                          priority={index < 4}
                         />
                       </div>
                     ) : (
-                      <div className="aspect-square bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center">
-                        <ShoppingCart size={48} className="text-white/30" />
+                      <div className="aspect-square bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center rounded-t-3xl transition-colors duration-300">
+                        <ShoppingCart size={48} className="text-gray-400" />
                       </div>
                     )}
 
-                    <div className="p-4">
-                      <h3 className="text-lg font-semibold text-white mb-2 line-clamp-2 group-hover:text-purple-400 transition">
+                    <div className="p-6 space-y-3">
+                      <h3 className="font-serif text-xl text-gray-900 tracking-tight line-clamp-2 group-hover:text-pink-600 transition-colors duration-300">
                         {product.name}
                       </h3>
-                      <div className="flex items-center justify-between">
-                        <span className="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                      <div className="flex items-center justify-between pt-2">
+                        <span className="font-serif text-2xl text-pink-600 tracking-tight font-bold transition-colors duration-300">
                           {formatINR(product.price)}
                         </span>
                         <div onClick={(e) => e.preventDefault()}>
@@ -89,24 +83,24 @@ export default function FeaturedProducts({
                     </div>
                   </div>
                 </Link>
-              </motion.div>
+              </div>
             ))}
       </div>
 
       {products && products.length === 0 && (
         <div className="text-center py-16">
-          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-12 inline-block">
-            <ShoppingCart size={64} className="text-gray-500 mx-auto mb-4" />
-            <h3 className="text-white text-xl font-semibold mb-2">
+          <div className="glass-card rounded-3xl p-12 inline-block">
+            <ShoppingCart size={64} className="text-gray-600 mx-auto mb-4 transition-colors duration-300" />
+            <h3 className="text-gray-900 text-xl font-semibold mb-2 transition-colors duration-300">
               No featured products available yet
             </h3>
-            <p className="text-gray-400 mb-6">
+            <p className="text-gray-600 mb-6 transition-colors duration-300">
               Check back soon for our handpicked selections
             </p>
             <Link href="/products">
               <button
                 type="button"
-                className="px-8 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-purple-500/50 transition-all"
+                className="px-8 py-4 btn-primary rounded-2xl"
               >
                 Browse All Products
               </button>
@@ -116,19 +110,19 @@ export default function FeaturedProducts({
       )}
 
       {products && products.length > 0 && (
-        <div className="text-center mt-12">
+        <div className="text-center mt-16">
           <Link href="/products">
             <motion.button
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.02, y: -2 }}
+              whileTap={{ scale: 0.98 }}
               type="button"
-              className="px-8 py-3 bg-white/10 backdrop-blur-xl border border-white/20 text-white font-semibold rounded-xl hover:bg-white/15 hover:border-white/30 transition-all"
+              className="px-8 py-4 btn-ghost rounded-2xl"
             >
               View All Products
             </motion.button>
           </Link>
         </div>
       )}
-    </div>
+    </section>
   );
 }

@@ -65,8 +65,9 @@ export default function AddToCartButton({
       type="button"
       onClick={handleAddToCart}
       disabled={loading || stock === 0}
-      className="p-2 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
+      className="p-2.5 rounded-xl bg-gradient-to-r from-pink-600 to-purple-600 text-gray-900 hover:shadow-lg hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed border border-white/40"
       title={stock === 0 ? "Out of stock" : "Add to cart"}
+      aria-label="Add to cart"
     >
       <ShoppingCart size={18} />
     </button>

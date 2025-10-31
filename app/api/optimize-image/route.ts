@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import sharp from "sharp";
 
 export async function POST(request: NextRequest) {
@@ -10,10 +10,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
-    // Get optional parameters
-    const maxWidth = parseInt(formData.get("maxWidth") as string) || 1920;
-    const maxHeight = parseInt(formData.get("maxHeight") as string) || 1080;
-    const quality = parseInt(formData.get("quality") as string) || 80;
+    // Get optional parameters (with radix)
+    const maxWidth = parseInt(formData.get("maxWidth") as string, 10) || 1920;
+    const maxHeight = parseInt(formData.get("maxHeight") as string, 10) || 1080;
+    const quality = parseInt(formData.get("quality") as string, 10) || 80;
 
     // Convert file to buffer
     const arrayBuffer = await file.arrayBuffer();
@@ -28,8 +28,9 @@ export async function POST(request: NextRequest) {
       .webp({ quality })
       .toBuffer();
 
-    // Return optimized image
-    return new NextResponse(optimizedImage, {
+    // Return optimized image as a Uint8Array (BodyInit compliant)
+    const u8 = new Uint8Array(optimizedImage);
+    return new NextResponse(u8, {
       status: 200,
       headers: {
         "Content-Type": "image/webp",
@@ -71,10 +72,10 @@ export async function GET(request: NextRequest) {
     const arrayBuffer = await response.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    // Get optional parameters
-    const maxWidth = parseInt(searchParams.get("maxWidth") || "1920");
-    const maxHeight = parseInt(searchParams.get("maxHeight") || "1080");
-    const quality = parseInt(searchParams.get("quality") || "80");
+    // Get optional parameters (with radix)
+    const maxWidth = parseInt(searchParams.get("maxWidth") || "1920", 10);
+    const maxHeight = parseInt(searchParams.get("maxHeight") || "1080", 10);
+    const quality = parseInt(searchParams.get("quality") || "80", 10);
 
     // Optimize image
     const optimizedImage = await sharp(buffer)
@@ -85,7 +86,8 @@ export async function GET(request: NextRequest) {
       .webp({ quality })
       .toBuffer();
 
-    return new NextResponse(optimizedImage, {
+    const u8 = new Uint8Array(optimizedImage);
+    return new NextResponse(u8, {
       status: 200,
       headers: {
         "Content-Type": "image/webp",
