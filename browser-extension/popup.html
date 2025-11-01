@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meesho Importer</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🛍️ Meesho Importer</h1>
+      <p class="subtitle">Add products to Cozzyhub</p>
+    </div>
+
+    <div id="notProductPage" class="message hidden">
+      <p>⚠️ Could not detect product</p>
+      <p style="font-size: 12px; margin-top: 8px; margin-bottom: 12px;">Make sure you're on a Meesho product page, then try:</p>
+      <button id="retryBtn" style="width: 100%; padding: 10px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+        🔄 Retry Extraction
+      </button>
+    </div>
+
+    <div id="productPreview" class="hidden">
+      <div class="product-card">
+        <img id="productImage" src="" alt="Product" class="product-image">
+        <div class="product-details">
+          <h2 id="productTitle">Product Title</h2>
+          <p class="product-price">₹<span id="productPrice">0</span></p>
+          <p class="product-category" id="productCategory"></p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="stock">Stock Quantity:</label>
+        <input type="number" id="stock" value="100" min="0" placeholder="Enter stock quantity">
+      </div>
+
+      <div class="form-group">
+        <label for="apiUrl">Your Cozzyhub URL:</label>
+        <input type="text" id="apiUrl" placeholder="http://localhost:3000" value="http://localhost:3000">
+      </div>
+
+      <button id="addProductBtn" class="btn btn-primary">
+        <span id="btnText">Add to Store</span>
+        <span id="btnLoader" class="loader hidden"></span>
+      </button>
+
+      <div id="successMessage" class="message success hidden">
+        ✅ Product added successfully!
+      </div>
+
+      <div id="errorMessage" class="message error hidden">
+        ❌ <span id="errorText">Failed to add product</span>
+      </div>
+    </div>
+
+    <div id="loading" class="loading hidden">
+      <div class="spinner"></div>
+      <p>Extracting product data...</p>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

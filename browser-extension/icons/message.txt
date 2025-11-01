@@ -1,0 +1,282 @@
+  ______ _                                    ______              _____              _     _____ ______ _   _
+ |  ____| |                           ___    |___  /             / ____|            | |   / ____|  ____| \ | |
+ | |__  | | ___  _ __  _ __   __ _   ( _ )      / / ___  ___    | |     __ _ _ __ __| |  | |  __| |__  |  \| |
+ |  __| | |/ _ \| '_ \| '_ \ / _` |  / _ \/\   / / / _ \/ _ \   | |    / _` | '__/ _` |  | | |_ |  __| | . ` |
+ | |    | | (_) | |_) | |_) | (_| | | (_>  <  / /_|  __/ (_) |  | |___| (_| | | | (_| |  | |__| | |____| |\  |
+ |_|    |_|\___/| .__/| .__/ \__,_|  \___/\/ /_____\___|\___/    \_____\__,_|_|  \__,_|   \_____|______|_| \_|
+                | |   | |
+                |_|   |_|
+
+Discord = zeoxide | CHECK BIO#6969, Sensei_Mike#2440, ! muffin#1929
+If you paid more than $25 for this you're scammed lol
+
+Cards & Balance List:
+0.  < $1000 AMZ SC
+1.  $1000 AMZ SC
+2.  $2000 AMZ SC
+3.  $5000 AMZ SC
+4.  $7000 AMZ SC
+5.  $10.000 AMZ SC
+6.  $20.000 AMZ SC
+7.  $40.000 AMZ SC
+8.  $100.000 AMZ SC
+9.  AMZ Corporate Revolving SC
+10. Multifunction Discover Card
+11. BestBuy Storecard
+12. Target Storecard
+13. AMZ Visa Signature CC
+14. Amazon Standard 1-10K SC
+15. HQ BestBuy Storecard
+16. HQ Multifunction Discover Card
+
+[✰] Which Card to generate? [ input the numbers! ] : 2
+
+[✰] Number of Cards to Generate: 1909
+
+[✰] 6045781145852012 Invalid Card
+
+[✰] 6045781147774614 Invalid Card
+
+[✰] 6045781141956402 Invalid Card
+
+[✰] 6045781145534946 Valid Card
+
+[✰] 6045781142984364 Invalid Card
+
+[✰] 6045781149159972 Invalid Card
+
+[✰] 6045781147941517 Invalid Card
+
+[✰] 6045781141749330 Invalid Card
+
+[✰] 6045781140376225 Invalid Card
+
+[✰] 6045781145278388 Invalid Card
+
+[✰] 6045781140547054 Invalid Card
+
+[✰] 6045781148790435 Invalid Card
+
+[✰] 6045781141067715 Invalid Card
+
+[✰] 6045781148551155 Invalid Card
+
+[✰] 6045781149944309 Invalid Card
+
+[✰] 6045781145332522 Invalid Card
+
+[✰] 6045781141707351 Invalid Card
+
+[✰] 6045781142196526 Invalid Card
+
+[✰] 6045781145251611 Invalid Card
+
+[✰] 6045781144112555 Invalid Card
+
+[✰] 6045781145005957 Invalid Card
+
+[✰] 6045781141370070 Invalid Card
+
+[✰] 6045781144993395 Invalid Card
+
+[✰] 6045781140430537 Invalid Card
+
+[✰] 6045781148336757 Invalid Card
+
+[✰] 6045781146418507 Invalid Card
+
+[✰] 6045781141043029 Invalid Card
+
+[✰] 6045781147369364 Invalid Card
+
+[✰] 6045781145237673 Invalid Card
+
+[✰] 6045781145316233 Invalid Card
+
+[✰] 6045781148290015 Invalid Card
+
+[✰] 6045781149751817 Invalid Card
+
+[✰] 6045781146695777 Invalid Card
+
+[✰] 6045781142846241 Invalid Card
+
+[✰] 6045781149684548 Invalid Card
+
+[✰] 6045781141966881 Invalid Card
+
+[✰] 6045781142210938 Valid Card
+
+[✰] 6045781148018265 Invalid Card
+
+[✰] 6045781140113122 Invalid Card
+
+[✰] 6045781143842576 Invalid Card
+
+[✰] 6045781147737593 Invalid Card
+
+[✰] 6045781140818604 Invalid Card
+
+[✰] 6045781142628722 Invalid Card
+
+[✰] 6045781147819332 Invalid Card
+
+[✰] 6045781142614547 Invalid Card
+
+[✰] 6045781143174963 Invalid Card
+
+[✰] 6045781148696614 Invalid Card
+
+[✰] 6045781140004012 Invalid Card
+
+[✰] 6045781140296062 Invalid Card
+
+[✰] 6045781144090685 Invalid Card
+
+[✰] 6045781149853139 Invalid Card
+
+[✰] 6045781144207682 Invalid Card
+
+[✰] 6045781148705826 Invalid Card
+
+[✰] 6045781148195705 Invalid Card
+
+[✰] 6045781145395245 Invalid Card
+
+[✰] 6045781141119044 Invalid Card
+
+[✰] 6045781149241728 Invalid Card
+
+[✰] 6045781141418425 Valid Card
+
+[✰] 6045781144234575 Invalid Card
+
+[✰] 6045781149932921 Invalid Card
+
+[✰] 6045781144918303 Invalid Card
+
+[✰] 6045781147505427 Invalid Card
+
+[✰] 6045781140412826 Invalid Card
+
+[✰] 6045781140187863 Invalid Card
+
+[✰] 6045781147016432 Invalid Card
+
+[✰] 6045781148706007 Invalid Card
+
+[✰] 6045781140511236 Invalid Card
+
+[✰] 6045781148110127 Invalid Card
+
+[✰] 6045781145278433 Invalid Card
+
+[✰] 6045781141756637 Invalid Card
+
+[✰] 6045781145491036 Invalid Card
+
+[✰] 6045781144223676 Invalid Card
+
+[✰] 6045781147802473 Valid Card
+
+[✰] 6045781149488034 Invalid Card
+
+[✰] 6045781142357800 Invalid Card
+
+[✰] 6045781145745599 Invalid Card
+
+[✰] 6045781140370299 Invalid Card
+
+[✰] 6045781149657485 Invalid Card
+
+[✰] 6045781145167772 Invalid Card
+
+[✰] 6045781149950118 Invalid Card
+
+[✰] 6045781146425787 Invalid Card
+
+[✰] 6045781145101124 Invalid Card
+
+[✰] 6045781147148236 Invalid Card
+
+[✰] 6045781147069913 Invalid Card
+
+[✰] 6045781141497187 Invalid Card
+
+[✰] 6045781145773432 Invalid Card
+
+[✰] 6045781141787152 Invalid Card
+
+[✰] 6045781147659121 Valid Card
+
+[✰] 6045781146074111 Invalid Card
+
+[✰] 6045781140088234 Invalid Card
+
+[✰] 6045781140574829 Invalid Card
+
+[✰] 6045781146553184 Valid Card
+
+[✰] 6045781149168266 Invalid Card
+
+[✰] 6045781147941311 Invalid Card
+
+[✰] 6045781140532372 Invalid Card
+
+[✰] 6045781146257429 Invalid Card
+
+[✰] 6045781142040801 Invalid Card
+
+[✰] 6045781143458706 Invalid Card
+
+[✰] 6045781144174989 Invalid Card
+
+[✰] 6045781148547091 Invalid Card
+
+[✰] 6045781149411273 Valid Card
+
+[✰] 6045781140870200 Invalid Card
+
+[✰] 6045781144981863 Invalid Card
+
+[✰] 6045781149006971 Invalid Card
+
+[✰] 6045781148635911 Invalid Card
+
+[✰] 6045781147463625 Invalid Card
+
+[✰] 6045781146643266 Valid Card
+
+[✰] 6045781143487563 Invalid Card
+
+[✰] 6045781148623549 Invalid Card
+
+[✰] 6045781147003842 Invalid Card
+
+[✰] 6045781142181069 Invalid Card
+
+[✰] 6045781144787068 Invalid Card
+
+[✰] 6045781145185187 Invalid Card
+
+[✰] 6045781145997923 Invalid Card
+
+[✰] 6045781143211482 Invalid Card
+
+[✰] 6045781149787111 Invalid Card
+
+[✰] 6045781141183409 Valid Card
+
+[✰] 6045781146807883 Invalid Card
+
+[✰] 6045781147476997 Valid Card
+
+[✰] 6045781140299908 Invalid Card
+
+[✰] 6045781141692304 Invalid Card
+
+[✰] 6045781140226792 Invalid Card
+
+[✰] 6045781145170278 Invalid Card
+
+[✰] 6045781147389199 Invalid Card

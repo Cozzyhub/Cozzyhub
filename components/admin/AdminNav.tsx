@@ -10,6 +10,7 @@ import {
   Users,
   LogOut,
   Home,
+  TrendingUp,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
@@ -18,6 +19,7 @@ const navItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/products", label: "Products", icon: Package },
   { href: "/admin/orders", label: "Orders", icon: ShoppingCart },
+  { href: "/admin/affiliates", label: "Affiliates", icon: TrendingUp },
 ];
 
 export default function AdminNav() {
