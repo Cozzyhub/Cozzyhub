@@ -8,9 +8,19 @@ export async function GET(request: Request) {
 
   if (code) {
     const supabase = await createClient();
-    await supabase.auth.exchangeCodeForSession(code);
+    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    
+    if (error) {
+      console.error('Error exchanging code for session:', error);
+      // Redirect to login with error
+      return NextResponse.redirect(`${origin}/login?error=verification_failed`);
+    }
+    
+    // Successfully verified and logged in
+    // Redirect to home page
+    return NextResponse.redirect(`${origin}/?verified=true`);
   }
 
-  // Redirect to home page after successful authentication
-  return NextResponse.redirect(`${origin}/`);
+  // No code provided, redirect to login
+  return NextResponse.redirect(`${origin}/login`);
 }
