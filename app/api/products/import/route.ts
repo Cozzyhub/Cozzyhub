@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
+import { getCategoryNames } from "@/lib/categories";
 
 // Generate URL-friendly slug from title
 function generateSlug(title: string): string {
@@ -137,6 +138,24 @@ export async function POST(request: Request) {
     // Log the description being saved (for debugging)
     console.log('Description length:', fullDescription.length);
 
+    // Map category to valid category name
+    const validCategories = getCategoryNames();
+    let mappedCategory = "Women Ethnic"; // Default category
+    
+    if (category) {
+      // Try to find a matching category (case-insensitive)
+      const categoryLower = category.toLowerCase();
+      const found = validCategories.find(cat => 
+        cat.toLowerCase().includes(categoryLower) || 
+        categoryLower.includes(cat.toLowerCase())
+      );
+      if (found) {
+        mappedCategory = found;
+      }
+    }
+    
+    console.log(`Category mapping: "${category}" → "${mappedCategory}"`);
+    
     // Generate slug from title
     const baseSlug = generateSlug(title);
     let slug = baseSlug;
@@ -162,7 +181,7 @@ export async function POST(request: Request) {
         description: fullDescription,
         price: Number(price),
         stock: Number(stock) || 100,
-        category: category || "Uncategorized",
+        category: mappedCategory,
         image_url: finalImages[0] || null,
         images: finalImages || null, // Store ALL images (including first one)
       })
