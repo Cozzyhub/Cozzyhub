@@ -164,7 +164,7 @@ export async function POST(request: Request) {
         stock: Number(stock) || 100,
         category: category || "Uncategorized",
         image_url: finalImages[0] || null,
-        images: finalImages.length > 1 ? finalImages.slice(1) : null,
+        images: finalImages || null, // Store ALL images (including first one)
       })
       .select()
       .single();

@@ -31,22 +31,64 @@ function extractProductData() {
 
     console.log('Extracted title:', title);
 
-    // Extract price - search the entire page for rupee amounts
+    // Extract price - Look for price in specific elements first (more accurate)
     let price = 0;
-    const bodyText = document.body.innerText;
-    const priceMatches = bodyText.match(/₹\s*(\d{1,6}(?:,\d{3})*)/g);
     
-    if (priceMatches && priceMatches.length > 0) {
-      // Get the first reasonable price (between 10 and 100000)
-      for (const match of priceMatches) {
-        const priceStr = match.replace(/₹|,/g, '').trim();
-        const priceNum = parseInt(priceStr);
-        if (priceNum >= 10 && priceNum <= 100000) {
-          price = priceNum;
-          console.log('Found price:', price);
-          break;
+    // Strategy 1: Look for large price elements (h1-h5, specific price classes)
+    const priceSelectors = [
+      'h1, h2, h3, h4, h5',
+      '[class*="price"]',
+      '[class*="Price"]',
+      'span[class*="Text"]',
+    ];
+    
+    const validPrices = [];
+    
+    for (const selector of priceSelectors) {
+      const elements = document.querySelectorAll(selector);
+      elements.forEach(el => {
+        const text = el.textContent?.trim();
+        if (text && text.includes('₹')) {
+          // Match prices in this specific element
+          const matches = text.match(/₹\s*(\d{1,6}(?:,\d{3})*)/g);
+          if (matches) {
+            matches.forEach(match => {
+              const priceStr = match.replace(/₹|,/g, '').trim();
+              const priceNum = parseInt(priceStr);
+              // Meesho prices are typically 50+ rupees, filter out very small numbers
+              if (priceNum >= 50 && priceNum <= 100000) {
+                validPrices.push(priceNum);
+                console.log('Found price in element:', priceNum, 'from', el.tagName, text.substring(0, 50));
+              }
+            });
+          }
         }
+      });
+    }
+    
+    // Strategy 2: If no prices found, scan full page text
+    if (validPrices.length === 0) {
+      console.log('No prices found in elements, scanning full page...');
+      const bodyText = document.body.textContent;
+      const priceMatches = bodyText.match(/₹\s*(\d{1,6}(?:,\d{3})*)/g);
+      
+      if (priceMatches) {
+        priceMatches.forEach(match => {
+          const priceStr = match.replace(/₹|,/g, '').trim();
+          const priceNum = parseInt(priceStr);
+          if (priceNum >= 50 && priceNum <= 100000) {
+            validPrices.push(priceNum);
+          }
+        });
       }
+    }
+    
+    // The lowest price is usually the actual selling price (after discount)
+    if (validPrices.length > 0) {
+      price = Math.min(...validPrices);
+      console.log('All found prices:', validPrices, '→ Selected lowest:', price);
+    } else {
+      console.log('No valid prices found');
     }
 
     // Fallback: look for specific price elements
@@ -220,7 +262,7 @@ function extractProductData() {
     
     // Try to find Product Highlights section
     const highlightsSection = document.querySelector('h2, h3, h4, div');
-    const allText = document.body.innerText;
+    const allText = document.body.textContent;
     
     // Extract color information
     const colorMatch = allText.match(/Color[:\s]*(\w+)/i);
