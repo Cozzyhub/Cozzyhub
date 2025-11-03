@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useRouter, useParams } from "next/navigation";
 import { ArrowLeft, Upload, X } from "lucide-react";
 import Link from "next/link";
-import { getCategoryNames } from "@/lib/categories";
+import { getCategoryNames, getSubcategoriesForCategory } from "@/lib/categories";
 
 export default function EditProductPage() {
   const [loading, setLoading] = useState(false);
@@ -17,6 +17,7 @@ export default function EditProductPage() {
     name: "",
     slug: "",
     category: "",
+    subcategory: "",
     description: "",
     price: "",
     stock: "",
@@ -51,6 +52,7 @@ export default function EditProductPage() {
           name: data.name || "",
           slug: data.slug || "",
           category: data.category || "",
+          subcategory: data.subcategory || "",
           description: data.description || "",
           price: data.price?.toString() || "",
           stock: data.stock?.toString() || "",
@@ -209,7 +211,7 @@ export default function EditProductPage() {
                 required
                 value={formData.category}
                 onChange={(e) =>
-                  setFormData({ ...formData, category: e.target.value })
+                  setFormData({ ...formData, category: e.target.value, subcategory: "" })
                 }
                 className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
                 style={{ colorScheme: "dark" }}
@@ -229,6 +231,36 @@ export default function EditProductPage() {
               </select>
             </div>
           </div>
+
+          {/* Subcategory Selection */}
+          {formData.category && getSubcategoriesForCategory(formData.category).length > 0 && (
+            <div>
+              <label className="block text-sm font-medium text-gray-200 mb-2">
+                Subcategory (Optional)
+              </label>
+              <select
+                value={formData.subcategory}
+                onChange={(e) =>
+                  setFormData({ ...formData, subcategory: e.target.value })
+                }
+                className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                style={{ colorScheme: "dark" }}
+              >
+                <option value="" className="bg-slate-800 text-gray-300">
+                  Select a subcategory (optional)
+                </option>
+                {getSubcategoriesForCategory(formData.category).map((subcat) => (
+                  <option
+                    key={subcat}
+                    value={subcat}
+                    className="bg-slate-800 text-white"
+                  >
+                    {subcat}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           <div>
             <label className="block text-sm font-medium text-gray-200 mb-2">
