@@ -2,7 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { formatINR } from "@/lib/utils/currency";
-import { Copy, ExternalLink, TrendingUp, MousePointer, ShoppingCart } from "lucide-react";
+import {
+  Copy,
+  ExternalLink,
+  TrendingUp,
+  MousePointer,
+  ShoppingCart,
+} from "lucide-react";
 
 interface ProductLink {
   id: string;
@@ -82,7 +88,9 @@ export default function ProductLinksTable() {
     return (
       <div className="text-center py-12">
         <p className="text-gray-500 text-lg mb-2">No product links yet</p>
-        <p className="text-gray-400 text-sm">Generate your first product link above</p>
+        <p className="text-gray-400 text-sm">
+          Generate your first product link above
+        </p>
       </div>
     );
   }
@@ -92,8 +100,12 @@ export default function ProductLinksTable() {
       <table className="w-full">
         <thead>
           <tr className="border-b border-gray-200">
-            <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Product</th>
-            <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Link Code</th>
+            <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
+              Product
+            </th>
+            <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
+              Link Code
+            </th>
             <th className="text-center py-3 px-4 text-sm font-semibold text-gray-700">
               <div className="flex items-center justify-center gap-1">
                 <MousePointer size={14} />
@@ -112,12 +124,17 @@ export default function ProductLinksTable() {
                 Commission
               </div>
             </th>
-            <th className="text-center py-3 px-4 text-sm font-semibold text-gray-700">Actions</th>
+            <th className="text-center py-3 px-4 text-sm font-semibold text-gray-700">
+              Actions
+            </th>
           </tr>
         </thead>
         <tbody>
           {links.map((link) => (
-            <tr key={link.id} className="border-b border-gray-100 hover:bg-gray-50">
+            <tr
+              key={link.id}
+              className="border-b border-gray-100 hover:bg-gray-50"
+            >
               {/* Product Info */}
               <td className="py-4 px-4">
                 <div className="flex items-center gap-3">
@@ -129,8 +146,12 @@ export default function ProductLinksTable() {
                     />
                   )}
                   <div>
-                    <p className="font-medium text-gray-900 text-sm">{link.products.name}</p>
-                    <p className="text-xs text-gray-500">{link.products.category}</p>
+                    <p className="font-medium text-gray-900 text-sm">
+                      {link.products.name}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {link.products.category}
+                    </p>
                     <p className="text-xs font-semibold text-pink-600">
                       {formatINR(link.products.price)}
                     </p>
@@ -161,12 +182,16 @@ export default function ProductLinksTable() {
 
               {/* Clicks */}
               <td className="py-4 px-4 text-center">
-                <span className="text-sm font-semibold text-gray-900">{link.clicks}</span>
+                <span className="text-sm font-semibold text-gray-900">
+                  {link.clicks}
+                </span>
               </td>
 
               {/* Conversions */}
               <td className="py-4 px-4 text-center">
-                <span className="text-sm font-semibold text-green-600">{link.conversions}</span>
+                <span className="text-sm font-semibold text-green-600">
+                  {link.conversions}
+                </span>
                 {link.clicks > 0 && (
                   <p className="text-xs text-gray-500">
                     {((link.conversions / link.clicks) * 100).toFixed(1)}%
@@ -234,7 +259,9 @@ export default function ProductLinksTable() {
         <div>
           <p className="text-xs text-gray-500 mb-1">Total Commission</p>
           <p className="text-2xl font-bold text-pink-600">
-            {formatINR(links.reduce((sum, link) => sum + link.total_commission, 0))}
+            {formatINR(
+              links.reduce((sum, link) => sum + link.total_commission, 0),
+            )}
           </p>
         </div>
       </div>

@@ -6,14 +6,14 @@ import Footer from "@/components/storefront/Footer";
 import { Suspense } from "react";
 
 export const metadata = {
-  title: "CosyHub - Your Cozy Corner for Comfort & Style",
+  title: "CozzyHub - Your Cozy Corner for Comfort & Style",
   description:
-    "Discover handpicked products for your home. Shop ethnic wear, fashion, electronics, and more at CosyHub.",
+    "Discover handpicked products for your home. Shop ethnic wear, fashion, electronics, and more at CozzyHub.",
 };
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen warm-gradient-bg flex flex-col">
       <Navbar />
       <Categories />
       <Hero />

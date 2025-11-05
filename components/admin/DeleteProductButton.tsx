@@ -1,9 +1,9 @@
 "use client";
 
 import { Trash2 } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useToast } from "@/lib/contexts/ToastContext";
 
 export default function DeleteProductButton({
   productId,
@@ -12,22 +12,32 @@ export default function DeleteProductButton({
 }) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const supabase = createClient();
+  const toast = useToast();
 
   const handleDelete = async () => {
-    if (!confirm("Are you sure you want to delete this product?")) return;
+    if (
+      !confirm(
+        "Are you sure you want to delete this product? This will also delete all associated images.",
+      )
+    )
+      return;
 
     setLoading(true);
-    const { error } = await supabase
-      .from("products")
-      .delete()
-      .eq("id", productId);
 
-    if (error) {
-      alert("Error deleting product");
-      setLoading(false);
-    } else {
+    try {
+      const response = await fetch(`/api/products/${productId}/delete`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete product");
+      }
+
+      toast.success("Product deleted successfully");
       router.refresh();
+    } catch (error) {
+      toast.error("Failed to delete product");
+      setLoading(false);
     }
   };
 

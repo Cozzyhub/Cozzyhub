@@ -37,12 +37,11 @@ export default function SignupPage() {
     } else {
       // Show success message
       alert(
-        "Account created! Please check your email to verify your account. After verification, you'll be automatically logged in."
+        "Account created! Please check your email to verify your account. After verification, you'll be automatically logged in.",
       );
       router.push("/login");
     }
   };
-
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
@@ -125,7 +124,6 @@ export default function SignupPage() {
               {loading ? "Creating account..." : "Sign Up"}
             </button>
           </form>
-
 
           <p className="mt-6 text-center text-gray-300">
             Already have an account?{" "}

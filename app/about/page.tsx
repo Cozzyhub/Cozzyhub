@@ -3,9 +3,9 @@ import Footer from "@/components/storefront/Footer";
 import { Heart, ShoppingBag, Truck, Shield, Users, Award } from "lucide-react";
 
 export const metadata = {
-  title: "About Us - CosyHub",
+  title: "About Us - CozzyHub",
   description:
-    "Learn about CosyHub, your cozy corner for comfort and style. Discover our mission, values, and commitment to quality.",
+    "Learn about CozzyHub, your cozy corner for comfort and style. Discover our mission, values, and commitment to quality.",
 };
 
 export default function AboutPage() {
@@ -19,7 +19,7 @@ export default function AboutPage() {
           <h1 className="font-serif text-5xl md:text-6xl font-bold text-gray-900 mb-6">
             About{" "}
             <span className="bg-gradient-to-r from-pink-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-              CosyHub
+              CozzyHub
             </span>
           </h1>
           <p className="text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto">
@@ -38,7 +38,7 @@ export default function AboutPage() {
             </h2>
             <div className="space-y-4 text-gray-600 leading-relaxed">
               <p>
-                CosyHub was founded with a simple vision: to create a space
+                CozzyHub was founded with a simple vision: to create a space
                 where quality meets comfort, and style meets affordability. We
                 believe that everyone deserves access to products that make
                 their lives better.
@@ -72,7 +72,7 @@ export default function AboutPage() {
               Our Values
             </h2>
             <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-              These core principles guide everything we do at CosyHub
+              These core principles guide everything we do at CozzyHub
             </p>
           </div>
 
@@ -123,7 +123,7 @@ export default function AboutPage() {
       <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center mb-16">
           <h2 className="font-serif text-4xl font-bold text-gray-900 mb-4">
-            Why Choose CosyHub?
+            Why Choose CozzyHub?
           </h2>
           <p className="text-gray-600 text-lg max-w-2xl mx-auto">
             We make shopping easy, safe, and enjoyable
@@ -225,10 +225,7 @@ export default function AboutPage() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <button
-                type="button"
-                className="px-8 py-4 btn-ghost rounded-2xl"
-              >
+              <button type="button" className="px-8 py-4 btn-ghost rounded-2xl">
                 Contact Us
               </button>
             </a>

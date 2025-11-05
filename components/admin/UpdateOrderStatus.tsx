@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/lib/contexts/ToastContext";
 
 const statuses = ["pending", "processing", "shipped", "delivered", "cancelled"];
 
@@ -17,22 +18,44 @@ export default function UpdateOrderStatus({
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const supabase = createClient();
+  const toast = useToast();
 
   const handleUpdate = async (newStatus: string) => {
     setLoading(true);
     setStatus(newStatus);
 
-    const { error } = await supabase
-      .from("orders")
-      .update({ status: newStatus })
-      .eq("id", orderId);
+    try {
+      // Update order status
+      const { error: updateError } = await supabase
+        .from("orders")
+        .update({ status: newStatus })
+        .eq("id", orderId);
 
-    if (error) {
-      alert("Error updating status");
-      setStatus(currentStatus);
-    } else {
+      if (updateError) throw updateError;
+
+      // Trigger email notification via API
+      if (newStatus === "shipped" || newStatus === "delivered") {
+        try {
+          await fetch("/api/orders/send-status-email", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ orderId, status: newStatus }),
+          });
+          // Email sent in background, don't block UI
+        } catch (emailError) {
+          console.error("Failed to send email:", emailError);
+          // Don't show error to user, email is optional
+        }
+      }
+
+      toast.success(`Order status updated to ${newStatus}`);
       router.refresh();
+    } catch (error) {
+      console.error("Error updating status:", error);
+      toast.error("Failed to update order status");
+      setStatus(currentStatus);
     }
+
     setLoading(false);
   };
 

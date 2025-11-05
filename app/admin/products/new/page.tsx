@@ -15,6 +15,10 @@ export default function NewProductPage() {
   const [imageLoading, setImageLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>("");
+  const [additionalImages, setAdditionalImages] = useState<string[]>([]);
+  const [uploadingImageIndex, setUploadingImageIndex] = useState<number | null>(
+    null,
+  );
   const [formData, setFormData] = useState({
     name: "",
     slug: "",
@@ -96,15 +100,84 @@ export default function NewProductPage() {
     setFormData((prev) => ({ ...prev, image_url: "" }));
   };
 
+  const handleAdditionalImageUpload = async (file: File, index: number) => {
+    setUploadingImageIndex(index);
+    try {
+      // Optimize image using our API
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("maxWidth", "1920");
+      formData.append("maxHeight", "1080");
+      formData.append("quality", "85");
+
+      const response = await fetch("/api/optimize-image", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) throw new Error("Failed to optimize image");
+
+      const optimizedBlob = await response.blob();
+
+      // Upload to Supabase Storage
+      const fileName = `${Date.now()}-${file.name.replace(/\.[^/.]+$/, "")}.webp`;
+      const { data, error } = await supabase.storage
+        .from("products")
+        .upload(fileName, optimizedBlob, {
+          contentType: "image/webp",
+          cacheControl: "3600",
+        });
+
+      if (error) throw error;
+
+      // Get public URL
+      const { data: urlData } = supabase.storage
+        .from("products")
+        .getPublicUrl(fileName);
+
+      setAdditionalImages((prev) => {
+        const newImages = [...prev];
+        newImages[index] = urlData.publicUrl;
+        return newImages;
+      });
+    } catch (error) {
+      console.error("Image upload error:", error);
+      alert("Failed to upload image. Please try again.");
+    } finally {
+      setUploadingImageIndex(null);
+    }
+  };
+
+  const handleAdditionalFileSelect = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number,
+  ) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      handleAdditionalImageUpload(file, index);
+    }
+  };
+
+  const removeAdditionalImage = (index: number) => {
+    setAdditionalImages((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const addImageSlot = () => {
+    setAdditionalImages((prev) => [...prev, ""]);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+
+    const allImages = additionalImages.filter((img) => img !== "");
 
     const { error } = await supabase.from("products").insert([
       {
         ...formData,
         price: parseFloat(formData.price),
         stock: parseInt(formData.stock),
+        images: allImages.length > 0 ? allImages : null,
       },
     ]);
 
@@ -359,6 +432,69 @@ export default function NewProductPage() {
                 Optimizing and uploading image...
               </div>
             )}
+          </div>
+
+          {/* Additional Images Section */}
+          <div>
+            <label className="block text-sm font-medium text-gray-200 mb-2">
+              Additional Product Images (Gallery)
+            </label>
+            <p className="text-xs text-gray-400 mb-3">
+              Upload multiple images to show in product gallery
+            </p>
+
+            <div className="space-y-3">
+              {additionalImages.map((imageUrl, index) => (
+                <div key={index} className="flex gap-3 items-start">
+                  {!imageUrl ? (
+                    <label className="flex-1 flex flex-col items-center justify-center h-32 border-2 border-white/20 border-dashed rounded-lg cursor-pointer hover:bg-white/5 transition">
+                      <div className="flex flex-col items-center justify-center">
+                        <Upload className="w-8 h-8 mb-2 text-gray-400" />
+                        <p className="text-xs text-gray-400">
+                          {uploadingImageIndex === index ? (
+                            <span className="text-purple-400 animate-pulse">
+                              Uploading...
+                            </span>
+                          ) : (
+                            <span>Click to upload image {index + 1}</span>
+                          )}
+                        </p>
+                      </div>
+                      <input
+                        type="file"
+                        className="hidden"
+                        accept="image/*"
+                        onChange={(e) => handleAdditionalFileSelect(e, index)}
+                        disabled={uploadingImageIndex === index}
+                      />
+                    </label>
+                  ) : (
+                    <div className="flex-1 relative">
+                      <img
+                        src={imageUrl}
+                        alt={`Additional ${index + 1}`}
+                        className="w-full h-32 object-cover rounded-lg"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeAdditionalImage(index)}
+                        className="absolute top-2 right-2 p-1.5 bg-red-500 hover:bg-red-600 rounded-full transition"
+                      >
+                        <X size={16} className="text-white" />
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))}
+
+              <button
+                type="button"
+                onClick={addImageSlot}
+                className="w-full px-4 py-3 border-2 border-dashed border-white/20 rounded-lg text-gray-400 hover:text-white hover:border-white/40 transition text-sm"
+              >
+                + Add Another Image
+              </button>
+            </div>
           </div>
 
           <div className="flex gap-6">

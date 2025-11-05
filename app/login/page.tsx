@@ -33,7 +33,6 @@ export default function LoginPage() {
     }
   };
 
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-gray-50 to-gray-100 p-4">
       <motion.div
@@ -46,9 +45,7 @@ export default function LoginPage() {
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Welcome Back
           </h1>
-          <p className="text-gray-600 mb-8">
-            Sign in to your account
-          </p>
+          <p className="text-gray-600 mb-8">Sign in to your account</p>
 
           {error && (
             <div className="mb-4 p-3 rounded-lg bg-red-50 border border-red-200 text-red-800">
@@ -93,6 +90,15 @@ export default function LoginPage() {
               />
             </div>
 
+            <div className="flex items-center justify-between mb-6">
+              <Link
+                href="/reset-password"
+                className="text-sm text-pink-600 hover:text-pink-700 font-medium"
+              >
+                Forgot password?
+              </Link>
+            </div>
+
             <button
               type="submit"
               disabled={loading}
@@ -101,7 +107,6 @@ export default function LoginPage() {
               {loading ? "Signing in..." : "Sign In"}
             </button>
           </form>
-
 
           <p className="mt-6 text-center text-gray-600">
             Don't have an account?{" "}

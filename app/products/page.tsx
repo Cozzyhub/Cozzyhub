@@ -1,18 +1,53 @@
 import { createClient } from "@/lib/supabase/server";
 import Navbar from "@/components/storefront/Navbar";
-import ProductCard from "@/components/storefront/ProductCard";
+import ProductsPageContent from "@/components/storefront/ProductsPageContent";
+import ProductSort, { type SortOption } from "@/components/ui/ProductSort";
+import { Suspense } from "react";
 
 interface ProductsPageProps {
-  searchParams: { category?: string; subcategory?: string };
+  searchParams: { 
+    category?: string; 
+    subcategory?: string; 
+    page?: string;
+    sort?: SortOption;
+    priceMin?: string;
+    priceMax?: string;
+    rating?: string;
+    inStock?: string;
+    onSale?: string;
+    featured?: string;
+  };
 }
+
+const ITEMS_PER_PAGE = 12;
 
 export default async function ProductsPage({
   searchParams,
 }: ProductsPageProps) {
   const supabase = await createClient();
-  const { category, subcategory } = await searchParams;
+  const { 
+    category, 
+    subcategory, 
+    page, 
+    sort = "newest",
+    priceMin,
+    priceMax,
+    rating,
+    inStock,
+    onSale,
+    featured,
+  } = await searchParams;
+  
+  // Parse current page, default to 1
+  const currentPage = parseInt(page || "1", 10);
+  const from = (currentPage - 1) * ITEMS_PER_PAGE;
+  const to = from + ITEMS_PER_PAGE - 1;
 
-  let query = supabase.from("products").select("*").eq("is_active", true);
+  // Query with count to get total number of products
+  let query = supabase
+    .from("products")
+    .select("*", { count: "exact" })
+    .eq("is_active", true);
 
   // Filter by category if provided
   if (category) {
@@ -24,9 +59,82 @@ export default async function ProductsPage({
     query = query.eq("subcategory", subcategory);
   }
 
-  const { data: products } = await query.order("created_at", {
-    ascending: false,
-  });
+  // Filter by price range
+  if (priceMin) {
+    query = query.gte("price", parseFloat(priceMin));
+  }
+  if (priceMax) {
+    query = query.lte("price", parseFloat(priceMax));
+  }
+
+  // Filter by rating
+  if (rating) {
+    query = query.gte("average_rating", parseFloat(rating));
+  }
+
+  // Filter by stock availability
+  if (inStock === "true") {
+    query = query.gt("stock", 0);
+  }
+
+  // Filter by sale status
+  if (onSale === "true") {
+    query = query.eq("on_sale", true);
+  }
+
+  // Filter by featured status
+  if (featured === "true") {
+    query = query.eq("is_featured", true);
+  }
+
+  // Apply sorting
+  let orderColumn = "created_at";
+  let ascending = false;
+
+  switch (sort) {
+    case "newest":
+      orderColumn = "created_at";
+      ascending = false;
+      break;
+    case "oldest":
+      orderColumn = "created_at";
+      ascending = true;
+      break;
+    case "price-low":
+      orderColumn = "price";
+      ascending = true;
+      break;
+    case "price-high":
+      orderColumn = "price";
+      ascending = false;
+      break;
+    case "rating-high":
+      orderColumn = "average_rating";
+      ascending = false;
+      break;
+    case "rating-low":
+      orderColumn = "average_rating";
+      ascending = true;
+      break;
+    case "name-asc":
+      orderColumn = "name";
+      ascending = true;
+      break;
+    case "name-desc":
+      orderColumn = "name";
+      ascending = false;
+      break;
+  }
+
+  const { data: products, count } = await query
+    .order(orderColumn, { ascending })
+    .range(from, to);
+
+  // Calculate total pages
+  const totalPages = count ? Math.ceil(count / ITEMS_PER_PAGE) : 0;
+
+  // Check if filters are active
+  const hasFilters = !!(priceMin || priceMax || rating || inStock || onSale || featured);
 
   // Generate page title based on filters
   let pageTitle = "All Products";
@@ -49,10 +157,7 @@ export default async function ProductsPage({
           {/* Breadcrumbs */}
           {(category || subcategory) && (
             <div className="flex items-center gap-2 text-sm text-gray-600 mb-4">
-              <a
-                href="/"
-                className="hover:text-pink-600 transition-colors"
-              >
+              <a href="/" className="hover:text-pink-600 transition-colors">
                 Home
               </a>
               <span>/</span>
@@ -60,14 +165,12 @@ export default async function ProductsPage({
                 (subcategory ? (
                   <a
                     href={`/products?category=${encodeURIComponent(category)}`}
-                      className="hover:text-pink-600 transition-colors"
-                    >
+                    className="hover:text-pink-600 transition-colors"
+                  >
                     {category}
                   </a>
                 ) : (
-                    <span className="text-gray-900 font-medium">
-                      {category}
-                    </span>
+                  <span className="text-gray-900 font-medium">{category}</span>
                 ))}
               {subcategory && (
                 <>
@@ -80,43 +183,38 @@ export default async function ProductsPage({
             </div>
           )}
 
-          <h1 className="font-serif text-4xl md:text-5xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-pink-500 bg-clip-text text-transparent mb-4">
-            {pageTitle}
-          </h1>
-          <p className="text-gray-600 text-lg">
-            {pageDescription}
-          </p>
-
-          {/* Results count */}
-          {products && products.length > 0 && (
-            <p className="text-gray-500 text-sm mt-2">
-              {products.length} {products.length === 1 ? "product" : "products"}{" "}
-              found
-            </p>
-          )}
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {products?.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
-
-        {(!products || products.length === 0) && (
-          <div className="text-center py-12">
-            <div className="glass-card rounded-2xl p-12 inline-block">
-              <p className="text-gray-600 text-lg mb-2">
-                No products available in this category yet.
-              </p>
-              <a
-                href="/products"
-                className="text-pink-600 hover:text-pink-700 underline transition-colors"
-              >
-                View all products
-              </a>
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
+            <div>
+              <h1 className="font-serif text-4xl md:text-5xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-pink-500 bg-clip-text text-transparent mb-2">
+                {pageTitle}
+              </h1>
+              <p className="text-gray-600 text-lg">{pageDescription}</p>
             </div>
+            <Suspense fallback={<div className="h-10 w-64 bg-gray-200 animate-pulse rounded-lg" />}>
+              <ProductSort />
+            </Suspense>
           </div>
-        )}
+
+        </div>
+
+        <ProductsPageContent
+          products={products || []}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          count={count}
+          hasFilters={hasFilters}
+          queryParams={{
+            ...(category && { category }),
+            ...(subcategory && { subcategory }),
+            ...(sort && sort !== "newest" && { sort }),
+            ...(priceMin && { priceMin }),
+            ...(priceMax && { priceMax }),
+            ...(rating && { rating }),
+            ...(inStock && { inStock }),
+            ...(onSale && { onSale }),
+            ...(featured && { featured }),
+          }}
+        />
       </div>
     </div>
   );

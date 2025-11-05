@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/storefront/Navbar";
+import CouponInput from "@/components/ui/CouponInput";
 import {
   ArrowLeft,
   Banknote,
@@ -17,14 +18,21 @@ import { formatINR } from "@/lib/utils/currency";
 export default function CheckoutPage() {
   const [user, setUser] = useState<any>(null);
   const [cartItems, setCartItems] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [isGuest, setIsGuest] = useState(false);
   const [customerName, setCustomerName] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
+  const [customerPhone, setCustomerPhone] = useState("");
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [postalCode, setPostalCode] = useState("");
   const [state, setState] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<"cod" | "online">("cod");
+  const [appliedCoupon, setAppliedCoupon] = useState<{
+    code: string;
+    discount: number;
+    couponData?: any;
+  } | null>(null);
 
   const router = useRouter();
   const supabase = createClient();
@@ -34,37 +42,105 @@ export default function CheckoutPage() {
       const {
         data: { user },
       } = await supabase.auth.getUser();
-      if (!user) {
-        router.push("/login");
-        return;
+      
+      if (user) {
+        // Logged in user
+        setUser(user);
+        setIsGuest(false);
+        setCustomerEmail(user.email || "");
+
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("full_name")
+          .eq("id", user.id)
+          .single();
+
+        if (profile) {
+          setCustomerName(profile.full_name || "");
+        }
+
+        const { data: items } = await supabase
+          .from("cart")
+          .select("*, products(*)")
+          .eq("user_id", user.id);
+
+        setCartItems(items || []);
+      } else {
+        // Guest user - get cart from localStorage
+        setIsGuest(true);
+        const guestCart = localStorage.getItem("guestCart");
+        if (guestCart) {
+          const guestCartItems = JSON.parse(guestCart);
+          
+          // Fetch product details for guest cart items
+          if (guestCartItems.length > 0) {
+            const productIds = guestCartItems.map((item: any) => item.productId);
+            const { data: products } = await supabase
+              .from("products")
+              .select("*")
+              .in("id", productIds);
+            
+            if (products) {
+              const itemsWithProducts = guestCartItems.map((item: any) => {
+                const product = products.find(p => p.id === item.productId);
+                return {
+                  id: item.productId,
+                  product_id: item.productId,
+                  quantity: item.quantity,
+                  products: product,
+                };
+              }).filter((item: any) => item.products); // Filter out items where product not found
+              
+              setCartItems(itemsWithProducts);
+            }
+          }
+        }
       }
-      setUser(user);
-      setCustomerEmail(user.email || "");
-
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("full_name")
-        .eq("id", user.id)
-        .single();
-
-      if (profile) {
-        setCustomerName(profile.full_name || "");
-      }
-
-      const { data: items } = await supabase
-        .from("cart")
-        .select("*, products(*)")
-        .eq("user_id", user.id);
-
-      setCartItems(items || []);
+      
+      setLoading(false);
     };
 
     fetchData();
   }, [supabase, router]);
 
-  const total = cartItems.reduce((sum, item) => {
+  const subtotal = cartItems.reduce((sum, item) => {
     return sum + Number(item.products.price) * item.quantity;
   }, 0);
+
+  const discount = appliedCoupon?.discount || 0;
+  const total = Math.max(subtotal - discount, 0);
+
+  const handleApplyCoupon = async (code: string) => {
+    try {
+      const response = await fetch("/api/coupons/validate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code, cartTotal: subtotal }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setAppliedCoupon({
+          code: data.couponData.code,
+          discount: data.discount,
+          couponData: data.couponData,
+        });
+      }
+
+      return data;
+    } catch (error) {
+      return {
+        success: false,
+        message: "Failed to apply coupon",
+        discount: 0,
+      };
+    }
+  };
+
+  const handleRemoveCoupon = () => {
+    setAppliedCoupon(null);
+  };
 
   const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,7 +158,7 @@ export default function CheckoutPage() {
       const { data: order, error: orderError } = await supabase
         .from("orders")
         .insert({
-          user_id: user.id,
+          user_id: isGuest ? null : user.id, // null for guest orders
           total,
           customer_name: customerName,
           customer_email: customerEmail,
@@ -92,8 +168,11 @@ export default function CheckoutPage() {
             postal_code: postalCode,
             state,
             country: "India",
+            phone: customerPhone,
           },
           status: "pending",
+          coupon_code: appliedCoupon?.code || null,
+          discount_amount: discount,
         })
         .select()
         .single();
@@ -114,9 +193,14 @@ export default function CheckoutPage() {
 
       if (itemsError) throw itemsError;
 
-      await supabase.from("cart").delete().eq("user_id", user.id);
-
-      router.push("/profile?order=success");
+      // Clear cart
+      if (isGuest) {
+        localStorage.removeItem("guestCart");
+        router.push(`/order-confirmation?orderId=${order.id}`);
+      } else {
+        await supabase.from("cart").delete().eq("user_id", user.id);
+        router.push("/profile?order=success");
+      }
     } catch (error) {
       console.error("Error placing order:", error);
       alert("Failed to place order. Please try again.");
@@ -125,7 +209,21 @@ export default function CheckoutPage() {
     }
   };
 
-  if (!user || cartItems.length === 0) {
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
+        <Navbar />
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
+          <div className="animate-pulse">
+            <div className="h-8 bg-white/10 rounded w-48 mx-auto mb-4"></div>
+            <div className="h-64 bg-white/10 rounded"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (cartItems.length === 0) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
         <Navbar />
@@ -157,7 +255,14 @@ export default function CheckoutPage() {
           Back to Cart
         </Link>
 
-        <h1 className="text-4xl font-bold text-white mb-8">Checkout</h1>
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="text-4xl font-bold text-white">Checkout</h1>
+          {isGuest && (
+            <span className="px-4 py-2 bg-purple-500/20 border border-purple-500 text-purple-200 rounded-lg text-sm font-medium">
+              Guest Checkout
+            </span>
+          )}
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
@@ -196,8 +301,25 @@ export default function CheckoutPage() {
                       required
                       className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 transition"
                       placeholder="raj@example.com"
+                      disabled={!isGuest && !!user}
                     />
                   </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-200 mb-2">
+                    Phone Number *
+                  </label>
+                  <input
+                    type="tel"
+                    value={customerPhone}
+                    onChange={(e) => setCustomerPhone(e.target.value)}
+                    required
+                    pattern="[0-9]{10}"
+                    className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 transition"
+                    placeholder="9876543210"
+                  />
+                  <p className="text-gray-400 text-xs mt-1">10-digit mobile number</p>
                 </div>
               </div>
 
@@ -376,11 +498,29 @@ export default function CheckoutPage() {
                 ))}
               </div>
 
+              {/* Coupon Input */}
+              <div className="mb-6">
+                <h3 className="text-sm font-medium text-gray-300 mb-3">
+                  Have a coupon code?
+                </h3>
+                <CouponInput
+                  onApply={handleApplyCoupon}
+                  onRemove={handleRemoveCoupon}
+                  appliedCoupon={appliedCoupon}
+                />
+              </div>
+
               <div className="border-t border-white/20 pt-4 space-y-3">
                 <div className="flex justify-between text-gray-300">
                   <span>Subtotal</span>
-                  <span>{formatINR(total)}</span>
+                  <span>{formatINR(subtotal)}</span>
                 </div>
+                {appliedCoupon && (
+                  <div className="flex justify-between text-green-400">
+                    <span>Discount ({appliedCoupon.code})</span>
+                    <span>-{formatINR(discount)}</span>
+                  </div>
+                )}
                 <div className="flex justify-between text-gray-300">
                   <span>Shipping</span>
                   <span className="text-green-400">Free</span>

@@ -3,14 +3,8 @@
   "name": "Meesho to Cozzyhub Importer",
   "version": "1.0.0",
   "description": "Import products from Meesho directly to your Cozzyhub store",
-  "permissions": [
-    "activeTab",
-    "storage"
-  ],
-  "host_permissions": [
-    "https://www.meesho.com/*",
-    "http://localhost:3000/*"
-  ],
+  "permissions": ["activeTab", "storage"],
+  "host_permissions": ["https://www.meesho.com/*", "http://localhost:3000/*"],
   "action": {
     "default_popup": "popup.html",
     "default_icon": {

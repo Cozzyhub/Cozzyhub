@@ -1,6 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Navbar from "@/components/storefront/Navbar";
+import CancelOrderButton from "@/components/storefront/CancelOrderButton";
+import OrderTimeline from "@/components/storefront/OrderTimeline";
 import {
   Mail,
   User,
@@ -186,6 +188,27 @@ export default async function ProfilePage({
                             {formatINR(order.total)}
                           </p>
                         </div>
+
+                        {/* Order Timeline */}
+                        <div className="mt-6 pt-6 border-t border-gray-200">
+                          <h4 className="text-sm font-semibold text-gray-900 mb-4">
+                            Order Status
+                          </h4>
+                          <OrderTimeline
+                            status={order.status}
+                            createdAt={order.created_at}
+                            deliveredAt={order.delivered_at}
+                            trackingNumber={order.tracking_number}
+                            courierName={order.courier_name}
+                            estimatedDelivery={order.estimated_delivery}
+                          />
+                        </div>
+
+                        {order.status === "pending" && (
+                          <div className="mt-4">
+                            <CancelOrderButton orderId={order.id} />
+                          </div>
+                        )}
 
                         {order.order_items && order.order_items.length > 0 && (
                           <div className="mt-4 space-y-2">

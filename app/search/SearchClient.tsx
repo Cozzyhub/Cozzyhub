@@ -128,10 +128,7 @@ export default function SearchClient() {
                 </button>
               )}
             </div>
-            <button
-              type="submit"
-              className="px-8 py-4 btn-primary rounded-xl"
-            >
+            <button type="submit" className="px-8 py-4 btn-primary rounded-xl">
               Search
             </button>
           </div>

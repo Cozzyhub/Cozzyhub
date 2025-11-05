@@ -5,7 +5,9 @@ import ProductLinksTable from "@/components/affiliate/ProductLinksTable";
 
 export default async function AffiliateLinksPage() {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) redirect("/login");
 
@@ -24,7 +26,8 @@ export default async function AffiliateLinksPage() {
             No Affiliate Account Found
           </h1>
           <p className="text-gray-600 mb-6">
-            You need to apply for an affiliate account to generate product links.
+            You need to apply for an affiliate account to generate product
+            links.
           </p>
           <a
             href="/"
@@ -76,7 +79,8 @@ export default async function AffiliateLinksPage() {
             Product Affiliate Links
           </h1>
           <p className="text-gray-600">
-            Generate unique affiliate links for specific products and track their performance
+            Generate unique affiliate links for specific products and track
+            their performance
           </p>
         </div>
 
@@ -107,8 +111,8 @@ export default async function AffiliateLinksPage() {
           <h2 className="text-xl font-semibold text-gray-900 mb-4">
             Generate New Product Link
           </h2>
-          <ProductLinkGenerator 
-            products={products || []} 
+          <ProductLinkGenerator
+            products={products || []}
             defaultCommissionRate={affiliate.commission_rate}
           />
         </div>

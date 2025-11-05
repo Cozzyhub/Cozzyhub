@@ -11,6 +11,10 @@ import {
   LogOut,
   Home,
   TrendingUp,
+  FolderTree,
+  AlertTriangle,
+  Star,
+  BarChart3,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
@@ -18,7 +22,12 @@ import { useRouter } from "next/navigation";
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/products", label: "Products", icon: Package },
+  { href: "/admin/categories", label: "Categories", icon: FolderTree },
+  { href: "/admin/inventory-alerts", label: "Inventory Alerts", icon: AlertTriangle },
   { href: "/admin/orders", label: "Orders", icon: ShoppingCart },
+  { href: "/admin/reviews", label: "Reviews", icon: Star },
+  { href: "/admin/reports", label: "Reports", icon: BarChart3 },
+  { href: "/admin/customers", label: "Customers", icon: Users },
   { href: "/admin/affiliates", label: "Affiliates", icon: TrendingUp },
 ];
 
@@ -37,7 +46,7 @@ export default function AdminNav() {
     <div className="fixed left-0 top-0 h-full w-64 backdrop-blur-xl bg-white/5 border-r border-white/10 p-6">
       <div className="mb-8">
         <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
-          CosyHub
+          CozzyHub
         </h1>
         <p className="text-gray-400 text-sm">Admin Panel</p>
       </div>

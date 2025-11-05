@@ -1,12 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Eye } from "lucide-react";
 import { formatINR } from "@/lib/utils/currency";
 import AddToCartButton from "@/components/storefront/AddToCartButton";
 import ProductCardSkeleton from "@/components/storefront/ProductCardSkeleton";
+import QuickViewModal from "@/components/storefront/QuickViewModal";
 
 interface Product {
   id: string;
@@ -22,6 +24,7 @@ export default function FeaturedProducts({
 }: {
   products: Product[];
 }) {
+  const [quickViewSlug, setQuickViewSlug] = useState<string | null>(null);
   const isLoading = !products;
 
   return (
@@ -41,14 +44,31 @@ export default function FeaturedProducts({
               <ProductCardSkeleton key={i} />
             ))
           : products.map((product, index) => (
-              <div
+              <motion.div
                 key={product.id}
-                className="group hover:-translate-y-2 hover:scale-[1.02] transition-transform duration-300"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: index * 0.05, ease: [0.4, 0, 0.2, 1] }}
+                whileHover={{ y: -6, scale: 1.015 }}
+                className="group will-change-transform"
               >
                 <Link href={`/products/${product.slug}`}>
                   <div className="bg-white border border-gray-200 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500">
                     {product.image_url ? (
                       <div className="relative aspect-square overflow-hidden rounded-t-3xl">
+                        {/* Quick View button */}
+                        <div className="absolute bottom-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setQuickViewSlug(product.slug);
+                            }}
+                            className="p-2.5 bg-white/90 backdrop-blur-sm text-gray-700 rounded-full hover:bg-white hover:scale-110 transition-all shadow-lg"
+                            title="Quick View"
+                          >
+                            <Eye size={18} />
+                          </button>
+                        </div>
                         <Image
                           src={product.image_url}
                           alt={product.name}
@@ -83,14 +103,17 @@ export default function FeaturedProducts({
                     </div>
                   </div>
                 </Link>
-              </div>
+              </motion.div>
             ))}
       </div>
 
       {products && products.length === 0 && (
         <div className="text-center py-16">
           <div className="glass-card rounded-3xl p-12 inline-block">
-            <ShoppingCart size={64} className="text-gray-600 mx-auto mb-4 transition-colors duration-300" />
+            <ShoppingCart
+              size={64}
+              className="text-gray-600 mx-auto mb-4 transition-colors duration-300"
+            />
             <h3 className="text-gray-900 text-xl font-semibold mb-2 transition-colors duration-300">
               No featured products available yet
             </h3>
@@ -115,13 +138,22 @@ export default function FeaturedProducts({
             <motion.button
               whileHover={{ scale: 1.02, y: -2 }}
               whileTap={{ scale: 0.98 }}
+              transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
               type="button"
-              className="px-8 py-4 btn-ghost rounded-2xl"
+              className="px-8 py-4 btn-ghost rounded-2xl will-change-transform"
             >
               View All Products
             </motion.button>
           </Link>
         </div>
+      )}
+
+      {quickViewSlug && (
+        <QuickViewModal
+          isOpen={!!quickViewSlug}
+          onClose={() => setQuickViewSlug(null)}
+          productSlug={quickViewSlug}
+        />
       )}
     </section>
   );

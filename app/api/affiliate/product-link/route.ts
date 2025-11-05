@@ -5,8 +5,10 @@ import { NextResponse } from "next/server";
 export async function POST(request: Request) {
   try {
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -15,7 +17,10 @@ export async function POST(request: Request) {
     const { product_id, custom_commission_rate, notes } = body;
 
     if (!product_id) {
-      return NextResponse.json({ error: "Product ID is required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Product ID is required" },
+        { status: 400 },
+      );
     }
 
     // Get affiliate profile
@@ -29,7 +34,7 @@ export async function POST(request: Request) {
     if (!affiliate) {
       return NextResponse.json(
         { error: "Active affiliate account not found" },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -56,14 +61,14 @@ export async function POST(request: Request) {
     if (existingLink) {
       return NextResponse.json({
         link: existingLink,
-        message: "Link already exists for this product"
+        message: "Link already exists for this product",
       });
     }
 
     // Generate unique link code
     const { data: linkCode } = await supabase.rpc(
       "generate_product_link_code",
-      { aff_id: affiliate.id, prod_id: product_id }
+      { aff_id: affiliate.id, prod_id: product_id },
     );
 
     // Create the product affiliate link
@@ -83,21 +88,20 @@ export async function POST(request: Request) {
       console.error("Error creating product link:", insertError);
       return NextResponse.json(
         { error: "Failed to create product link" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
     return NextResponse.json({
       link: productLink,
-      url: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/products/${product.id}?ref=${linkCode}`,
-      message: "Product affiliate link created successfully"
+      url: `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/products/${product.id}?ref=${linkCode}`,
+      message: "Product affiliate link created successfully",
     });
-
   } catch (error) {
     console.error("Error in product link API:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -106,8 +110,10 @@ export async function POST(request: Request) {
 export async function GET(request: Request) {
   try {
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -122,7 +128,7 @@ export async function GET(request: Request) {
     if (!affiliate) {
       return NextResponse.json(
         { error: "Affiliate account not found" },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -148,23 +154,23 @@ export async function GET(request: Request) {
       console.error("Error fetching product links:", error);
       return NextResponse.json(
         { error: "Failed to fetch product links" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
     // Add full URL to each link
-    const linksWithUrls = productLinks?.map(link => ({
-      ...link,
-      full_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/products/${link.product_id}?ref=${link.link_code}`
-    })) || [];
+    const linksWithUrls =
+      productLinks?.map((link) => ({
+        ...link,
+        full_url: `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/products/${link.product_id}?ref=${link.link_code}`,
+      })) || [];
 
     return NextResponse.json({ links: linksWithUrls });
-
   } catch (error) {
     console.error("Error in product link API:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -173,17 +179,22 @@ export async function GET(request: Request) {
 export async function DELETE(request: Request) {
   try {
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const { searchParams } = new URL(request.url);
-    const linkId = searchParams.get('id');
+    const linkId = searchParams.get("id");
 
     if (!linkId) {
-      return NextResponse.json({ error: "Link ID is required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Link ID is required" },
+        { status: 400 },
+      );
     }
 
     // Get affiliate profile
@@ -196,7 +207,7 @@ export async function DELETE(request: Request) {
     if (!affiliate) {
       return NextResponse.json(
         { error: "Affiliate account not found" },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -211,17 +222,16 @@ export async function DELETE(request: Request) {
       console.error("Error deactivating link:", error);
       return NextResponse.json(
         { error: "Failed to deactivate link" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
     return NextResponse.json({ message: "Link deactivated successfully" });
-
   } catch (error) {
     console.error("Error in product link API:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

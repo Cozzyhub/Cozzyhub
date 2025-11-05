@@ -36,9 +36,22 @@ export async function proxy(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Protect admin routes
-  if (request.nextUrl.pathname.startsWith("/admin") && !user) {
-    return NextResponse.redirect(new URL("/login", request.url));
+  // Protect admin routes - check both auth and admin status
+  if (request.nextUrl.pathname.startsWith("/admin")) {
+    if (!user) {
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
+
+    // Check if user is admin
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("is_admin")
+      .eq("id", user.id)
+      .single();
+
+    if (!profile?.is_admin) {
+      return NextResponse.redirect(new URL("/", request.url));
+    }
   }
 
   // Redirect authenticated users away from login/signup

@@ -6,14 +6,14 @@ import { ArrowRight, Truck, Shield, IndianRupee } from "lucide-react";
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden bg-white py-16 md:py-24 px-6">
+    <section className="relative overflow-hidden warm-gradient-bg py-16 md:py-24 px-6">
       <div className="section-container">
         <div className="text-center relative z-10">
           {/* Hero Headline */}
           <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl leading-tight tracking-wide text-gray-900 mb-6">
             Welcome to{" "}
             <span className="block mt-2 bg-gradient-to-r from-pink-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-              CosyHub
+              CozzyHub
             </span>
           </h1>
 
@@ -29,8 +29,9 @@ export default function Hero() {
               <motion.button
                 whileHover={{ scale: 1.02, y: -2 }}
                 whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
                 type="button"
-                className="group w-full sm:w-auto px-8 py-4 btn-primary rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 border border-white/40"
+                className="group w-full sm:w-auto px-8 py-4 btn-primary flex items-center justify-center gap-2 will-change-transform"
               >
                 Shop Now
                 <ArrowRight
@@ -43,8 +44,9 @@ export default function Hero() {
               <motion.button
                 whileHover={{ scale: 1.02, y: -2 }}
                 whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
                 type="button"
-                className="w-full sm:w-auto px-8 py-4 btn-ghost rounded-2xl"
+                className="w-full sm:w-auto px-8 py-4 btn-ghost will-change-transform"
               >
                 Explore Collection
               </motion.button>
@@ -57,9 +59,9 @@ export default function Hero() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              whileHover={{ scale: 1.05, y: -5 }}
-              className="glass-card rounded-2xl p-6 flex items-center gap-4 shadow-lg hover:shadow-xl transition-all duration-300 bg-white/90"
+              transition={{ duration: 0.4, delay: 0.1, ease: [0.4, 0, 0.2, 1] }}
+              whileHover={{ scale: 1.03, y: -3 }}
+              className="cozy-card p-6 flex items-center gap-4 will-change-transform"
             >
               <div className="w-14 h-14 rounded-full bg-gradient-to-br from-emerald-400 to-green-500 flex items-center justify-center flex-shrink-0 shadow-md">
                 <Truck size={24} className="text-white" />
@@ -68,9 +70,7 @@ export default function Hero() {
                 <p className="text-gray-900 font-semibold text-base">
                   Free Delivery
                 </p>
-                <p className="text-gray-600 text-sm">
-                  On all orders
-                </p>
+                <p className="text-gray-600 text-sm">On all orders</p>
               </div>
             </motion.div>
 
@@ -78,9 +78,9 @@ export default function Hero() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              whileHover={{ scale: 1.05, y: -5 }}
-              className="glass-card rounded-2xl p-6 flex items-center gap-4 shadow-lg hover:shadow-xl transition-all duration-300 bg-white/90"
+              transition={{ duration: 0.4, delay: 0.15, ease: [0.4, 0, 0.2, 1] }}
+              whileHover={{ scale: 1.03, y: -3 }}
+              className="cozy-card p-6 flex items-center gap-4 will-change-transform"
             >
               <div className="w-14 h-14 rounded-full bg-gradient-to-br from-amber-400 to-yellow-500 flex items-center justify-center flex-shrink-0 shadow-md">
                 <IndianRupee size={24} className="text-white" />
@@ -89,9 +89,7 @@ export default function Hero() {
                 <p className="text-gray-900 font-semibold text-base">
                   Cash on Delivery
                 </p>
-                <p className="text-gray-600 text-sm">
-                  Pay at doorstep
-                </p>
+                <p className="text-gray-600 text-sm">Pay at doorstep</p>
               </div>
             </motion.div>
 
@@ -99,9 +97,9 @@ export default function Hero() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              whileHover={{ scale: 1.05, y: -5 }}
-              className="glass-card rounded-2xl p-6 flex items-center gap-4 shadow-lg hover:shadow-xl transition-all duration-300 bg-white/90"
+              transition={{ duration: 0.4, delay: 0.2, ease: [0.4, 0, 0.2, 1] }}
+              whileHover={{ scale: 1.03, y: -3 }}
+              className="cozy-card p-6 flex items-center gap-4 will-change-transform"
             >
               <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-400 to-cyan-500 flex items-center justify-center flex-shrink-0 shadow-md">
                 <Shield size={24} className="text-white" />
@@ -110,9 +108,7 @@ export default function Hero() {
                 <p className="text-gray-900 font-semibold text-base">
                   Secure Shopping
                 </p>
-                <p className="text-gray-600 text-sm">
-                  100% protected
-                </p>
+                <p className="text-gray-600 text-sm">100% protected</p>
               </div>
             </motion.div>
           </div>

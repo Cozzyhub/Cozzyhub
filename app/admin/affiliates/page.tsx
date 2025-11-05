@@ -2,7 +2,15 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { formatINR } from "@/lib/utils/currency";
-import { CheckCircle, XCircle, Clock, Ban, TrendingUp, Users, DollarSign } from "lucide-react";
+import {
+  CheckCircle,
+  XCircle,
+  Clock,
+  Ban,
+  TrendingUp,
+  Users,
+  DollarSign,
+} from "lucide-react";
 
 export default async function AffiliatesAdminPage() {
   const supabase = await createClient();
@@ -32,7 +40,8 @@ export default async function AffiliatesAdminPage() {
     pending: affiliates?.filter((a) => a.status === "pending").length || 0,
     active: affiliates?.filter((a) => a.status === "active").length || 0,
     totalEarnings:
-      affiliates?.reduce((sum, a) => sum + Number(a.total_earnings || 0), 0) || 0,
+      affiliates?.reduce((sum, a) => sum + Number(a.total_earnings || 0), 0) ||
+      0,
   };
 
   const getStatusIcon = (status: string) => {
@@ -113,7 +122,9 @@ export default async function AffiliatesAdminPage() {
         {/* Affiliates Table */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-900">All Affiliates</h2>
+            <h2 className="text-lg font-semibold text-gray-900">
+              All Affiliates
+            </h2>
           </div>
 
           <div className="overflow-x-auto">
@@ -155,7 +166,9 @@ export default async function AffiliatesAdminPage() {
                           <p className="text-sm font-medium text-gray-900">
                             {affiliate.name}
                           </p>
-                          <p className="text-sm text-gray-500">{affiliate.email}</p>
+                          <p className="text-sm text-gray-500">
+                            {affiliate.email}
+                          </p>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">

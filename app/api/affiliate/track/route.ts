@@ -9,7 +9,10 @@ export async function POST(request: Request) {
     const { ref_code } = body;
 
     if (!ref_code) {
-      return NextResponse.json({ error: "Reference code is required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Reference code is required" },
+        { status: 400 },
+      );
     }
 
     // Get request headers for tracking
@@ -18,7 +21,7 @@ export async function POST(request: Request) {
     const referer = headersList.get("referer") || "";
     const forwardedFor = headersList.get("x-forwarded-for");
     const realIp = headersList.get("x-real-ip");
-    const ipAddress = forwardedFor?.split(',')[0] || realIp || "unknown";
+    const ipAddress = forwardedFor?.split(",")[0] || realIp || "unknown";
 
     // Check if this is a general affiliate code or product-specific link
     let affiliateId: string | null = null;
@@ -26,7 +29,7 @@ export async function POST(request: Request) {
     let productId: string | null = null;
 
     // Check if it's a product link code (format: AFFCODE-PROD123)
-    if (ref_code.includes('-')) {
+    if (ref_code.includes("-")) {
       const { data: productLink } = await supabase
         .from("product_affiliate_links")
         .select("*, affiliates(id, referral_code)")
@@ -56,7 +59,10 @@ export async function POST(request: Request) {
     }
 
     if (!affiliateId) {
-      return NextResponse.json({ error: "Invalid reference code" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Invalid reference code" },
+        { status: 404 },
+      );
     }
 
     // Record the click
@@ -79,7 +85,7 @@ export async function POST(request: Request) {
       console.error("Error recording click:", clickError);
       return NextResponse.json(
         { error: "Failed to record click" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -87,14 +93,14 @@ export async function POST(request: Request) {
     const response = NextResponse.json({
       success: true,
       message: "Click tracked successfully",
-      click_id: click.id
+      click_id: click.id,
     });
 
     response.cookies.set("affiliate_ref", ref_code, {
       maxAge: 30 * 24 * 60 * 60, // 30 days
       path: "/",
       sameSite: "lax",
-      secure: process.env.NODE_ENV === "production"
+      secure: process.env.NODE_ENV === "production",
     });
 
     if (click.id) {
@@ -102,17 +108,16 @@ export async function POST(request: Request) {
         maxAge: 30 * 24 * 60 * 60,
         path: "/",
         sameSite: "lax",
-        secure: process.env.NODE_ENV === "production"
+        secure: process.env.NODE_ENV === "production",
       });
     }
 
     return response;
-
   } catch (error) {
     console.error("Error in track API:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
