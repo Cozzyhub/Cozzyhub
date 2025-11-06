@@ -20,26 +20,37 @@ export default function SignupPage() {
     setLoading(true);
     setError(null);
 
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          full_name: fullName,
+    try {
+      // Call our custom registration API
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
+        body: JSON.stringify({
+          email,
+          password,
+          full_name: fullName,
+        }),
+      });
 
-    if (error) {
-      setError(error.message);
-      setLoading(false);
-    } else {
-      // Show success message
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || "Registration failed");
+        setLoading(false);
+        return;
+      }
+
+      // Show success message with authorization link
       alert(
-        "Account created! Please check your email to verify your account. After verification, you'll be automatically logged in.",
+        `Account created successfully!\n\nPlease check your email for the authorization link.\n\nYour authorization URL: ${data.authorization_url}`,
       );
       router.push("/login");
+    } catch (err) {
+      console.error("Signup error:", err);
+      setError("An unexpected error occurred. Please try again.");
+      setLoading(false);
     }
   };
 

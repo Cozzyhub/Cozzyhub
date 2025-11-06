@@ -27,6 +27,7 @@ export default function EditProductPage() {
     subcategory: "",
     description: "",
     price: "",
+    original_price: "",
     stock: "",
     image_url: "",
     is_active: true,
@@ -62,6 +63,7 @@ export default function EditProductPage() {
           subcategory: data.subcategory || "",
           description: data.description || "",
           price: data.price?.toString() || "",
+          original_price: data.original_price?.toString() || "",
           stock: data.stock?.toString() || "",
           image_url: data.image_url || "",
           is_active: data.is_active ?? true,
@@ -206,17 +208,31 @@ export default function EditProductPage() {
     setAdditionalImages((prev) => [...prev, ""]);
   };
 
+  const calculateDiscount = () => {
+    if (formData.original_price && formData.price) {
+      const original = parseFloat(formData.original_price);
+      const current = parseFloat(formData.price);
+      if (original > current && original > 0) {
+        return Math.round(((original - current) / original) * 100);
+      }
+    }
+    return null;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     const allImages = additionalImages.filter((img) => img !== "");
+    const discountPercentage = calculateDiscount();
 
     const { error } = await supabase
       .from("products")
       .update({
         ...formData,
         price: parseFloat(formData.price),
+        original_price: formData.original_price ? parseFloat(formData.original_price) : null,
+        discount_percentage: discountPercentage,
         stock: parseInt(formData.stock),
         images: allImages.length > 0 ? allImages : null,
       })
@@ -366,7 +382,26 @@ export default function EditProductPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-200 mb-2">
-                Price (INR) *
+                Original Price / MRP (INR)
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                value={formData.original_price}
+                onChange={(e) =>
+                  setFormData({ ...formData, original_price: e.target.value })
+                }
+                className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                placeholder="1999.00"
+              />
+              <p className="text-xs text-gray-400 mt-1">
+                The original price shown with strikethrough
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-200 mb-2">
+                Selling Price (INR) *
               </label>
               <input
                 type="number"
@@ -379,23 +414,28 @@ export default function EditProductPage() {
                 className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                 placeholder="999.00"
               />
+              {formData.original_price && formData.price && parseFloat(formData.original_price) > parseFloat(formData.price) && (
+                <p className="text-xs text-green-400 mt-1 font-medium">
+                  💰 {calculateDiscount()}% OFF - Saves ₹{(parseFloat(formData.original_price) - parseFloat(formData.price)).toFixed(2)}
+                </p>
+              )}
             </div>
+          </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-200 mb-2">
-                Stock *
-              </label>
-              <input
-                type="number"
-                required
-                value={formData.stock}
-                onChange={(e) =>
-                  setFormData({ ...formData, stock: e.target.value })
-                }
-                className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                placeholder="100"
-              />
-            </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-200 mb-2">
+              Stock *
+            </label>
+            <input
+              type="number"
+              required
+              value={formData.stock}
+              onChange={(e) =>
+                setFormData({ ...formData, stock: e.target.value })
+              }
+              className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              placeholder="100"
+            />
           </div>
 
           <div>
