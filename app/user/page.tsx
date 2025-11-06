@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
@@ -15,13 +15,35 @@ interface UserProfile {
   created_at: string;
 }
 
-export default function UserPage() {
+// Component that uses useSearchParams
+function AuthorizationBanner() {
+  const searchParams = useSearchParams();
+  const justAuthorized = searchParams.get("authorized") === "true";
+
+  if (!justAuthorized) return null;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="mb-8 backdrop-blur-xl bg-green-500/20 border border-green-500/50 rounded-2xl p-6 text-center"
+    >
+      <CheckCircle className="w-12 h-12 text-green-400 mx-auto mb-3" />
+      <h2 className="text-2xl font-bold text-white mb-2">
+        🎉 Authorization Successful!
+      </h2>
+      <p className="text-green-200">
+        Your account has been successfully authorized. Welcome to CozzyHub!
+      </p>
+    </motion.div>
+  );
+}
+
+function UserProfileContent() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const justAuthorized = searchParams.get("authorized") === "true";
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -103,22 +125,9 @@ export default function UserPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
       <div className="max-w-4xl mx-auto py-12">
         {/* Authorization Success Banner */}
-        {justAuthorized && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-8 backdrop-blur-xl bg-green-500/20 border border-green-500/50 rounded-2xl p-6 text-center"
-          >
-            <CheckCircle className="w-12 h-12 text-green-400 mx-auto mb-3" />
-            <h2 className="text-2xl font-bold text-white mb-2">
-              🎉 Authorization Successful!
-            </h2>
-            <p className="text-green-200">
-              Your account has been successfully authorized. Welcome to
-              CozzyHub!
-            </p>
-          </motion.div>
-        )}
+        <Suspense fallback={null}>
+          <AuthorizationBanner />
+        </Suspense>
 
         {/* Profile Card */}
         <motion.div
@@ -225,4 +234,8 @@ export default function UserPage() {
       </div>
     </div>
   );
+}
+
+export default function UserPage() {
+  return <UserProfileContent />;
 }
